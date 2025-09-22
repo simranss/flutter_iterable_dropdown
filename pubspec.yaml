@@ -8,15 +8,6 @@ environment:
   sdk: ^3.8.1
   flutter: ">=1.17.0"
 
-# This package supports all platforms listed below.
-platforms:
-  android:
-  ios:
-  linux:
-  macos:
-  web:
-  windows:
-
 dependencies:
   flutter:
     sdk: flutter
@@ -26,11 +17,25 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
 
+topics:
+  - dropdown
+  - multiselect
+  - iterable
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
+  # This package supports all platforms listed below.
+  platforms:
+    android:
+    ios:
+    linux:
+    macos:
+    web:
+    windows:
+
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
