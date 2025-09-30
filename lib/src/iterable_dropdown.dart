@@ -37,6 +37,8 @@ class IterableDropdown<T> extends StatefulWidget {
     this.searchFocusNode,
     this.maxHeight = 350,
     this.itemHeight = 60,
+    required this.hintText,
+    this.hintStyle,
   });
 
   final SelectionMode selectionMode;
@@ -49,6 +51,8 @@ class IterableDropdown<T> extends StatefulWidget {
   final IterableDropdownSelectedItemBuilder<T>? selectedItemBuilder;
   final double itemHeight;
   final double maxHeight;
+  final String hintText;
+  final TextStyle? hintStyle;
 
   @override
   State<IterableDropdown<T>> createState() => _IterableDropdownState();
@@ -276,56 +280,66 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
         builder: (context, _) {
           final Widget child;
 
-          final selectedItemBuilder = widget.selectedItemBuilder;
-          if (widget.selectionMode == SelectionMode.multi) {
-            // Create a list of Chip widgets from the selected items
-            final chips = _controller.selectedDropdownItems.mapIndexed((
-              index,
-              item,
-            ) {
-              void deleteFunc() => _controller.removeSelection(item.key);
-              if (selectedItemBuilder != null) {
-                return selectedItemBuilder(context, index, item, deleteFunc);
-              }
-              return Chip(
-                deleteButtonTooltipMessage: '',
-                label: Text(item.label),
-                onDeleted: deleteFunc,
-              );
-            });
-
-            child = switch (widget.wrapStyle) {
-              WrapStyle.wrap => Wrap(
-                spacing: 8, // Horizontal space between chips
-                runSpacing: 4, // Vertical space between lines of chips
-                children: [...chips],
-              ),
-              WrapStyle.list => SizedBox(
-                height: 45,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    ...chips.expandIndexed((i, ele) {
-                      if (i == chips.length - 1) return [ele];
-
-                      return [ele, SizedBox(width: 8)];
-                    }),
-                  ],
-                ),
-              ),
-            };
+          if (_controller.selectedDropdownItems.isEmpty) {
+            child = Text(widget.hintText, style: widget.hintStyle);
           } else {
-            final item = _controller.selectedDropdownItems.firstOrNull;
-            if (item == null) {
-              child = SizedBox();
+            final selectedItemBuilder = widget.selectedItemBuilder;
+            if (widget.selectionMode == SelectionMode.multi) {
+              // Create a list of Chip widgets from the selected items
+              final chips = _controller.selectedDropdownItems.mapIndexed((
+                index,
+                item,
+              ) {
+                void deleteFunc() => _controller.removeSelection(item.key);
+                if (selectedItemBuilder != null) {
+                  return selectedItemBuilder(context, index, item, deleteFunc);
+                }
+                return Chip(
+                  deleteButtonTooltipMessage: '',
+                  label: Text(item.label),
+                  onDeleted: deleteFunc,
+                );
+              });
+
+              child = switch (widget.wrapStyle) {
+                WrapStyle.wrap => Wrap(
+                  spacing: 8, // Horizontal space between chips
+                  runSpacing: 4, // Vertical space between lines of chips
+                  children: [...chips],
+                ),
+                WrapStyle.list => SizedBox(
+                  height: 45,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      ...chips.expandIndexed((i, ele) {
+                        if (i == chips.length - 1) return [ele];
+
+                        return [ele, SizedBox(width: 8)];
+                      }),
+                    ],
+                  ),
+                ),
+              };
             } else {
-              final index = 0;
-              void deleteFunc() => _controller.removeSelection(item.key);
-              child =
-                  selectedItemBuilder?.call(context, index, item, deleteFunc) ??
-                  Text(
-                    _controller.selectedDropdownItems.firstOrNull?.label ?? '',
-                  );
+              final item = _controller.selectedDropdownItems.firstOrNull;
+              if (item == null) {
+                child = SizedBox();
+              } else {
+                final index = 0;
+                void deleteFunc() => _controller.removeSelection(item.key);
+                child =
+                    selectedItemBuilder?.call(
+                      context,
+                      index,
+                      item,
+                      deleteFunc,
+                    ) ??
+                    Text(
+                      _controller.selectedDropdownItems.firstOrNull?.label ??
+                          '',
+                    );
+              }
             }
           }
 

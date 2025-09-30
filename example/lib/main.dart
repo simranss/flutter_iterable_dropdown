@@ -80,6 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 );
               },
+              hintText: 'Select an option',
               selectionMode: SelectionMode.multi,
             ),
           ],
