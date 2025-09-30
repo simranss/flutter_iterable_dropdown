@@ -10,6 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  equatable: ^2.0.7
+  collection: ^1.19.1
 
 dev_dependencies:
   flutter_test:
@@ -21,20 +23,20 @@ topics:
   - multiselect
   - iterable
 
+# This package supports all platforms listed below.
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  web:
+  windows:
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
-  # This package supports all platforms listed below.
-  platforms:
-    android:
-    ios:
-    linux:
-    macos:
-    web:
-    windows:
-
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

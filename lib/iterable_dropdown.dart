@@ -1,5 +1,3 @@
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'package:iterable_dropdown/src/iterable_dropdown.dart';
+export 'package:iterable_dropdown/src/iterable_dropdown_controller.dart';
+export 'package:iterable_dropdown/src/iterable_dropdown_item.dart';
