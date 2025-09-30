@@ -52,3 +52,7 @@ flutter:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700
+
+screenshots:
+  - description: "Example screenshot 1"
+    path: doc/screen_shot.png
