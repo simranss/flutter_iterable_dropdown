@@ -6,7 +6,7 @@ It has multiselect features for selecting multiple items as well.
     alt="An image of the dropdown UI" height="400"/>
   &nbsp;&nbsp;&nbsp;&nbsp;
   <img src="https://raw.githubusercontent.com/simranss/flutter_iterable_dropdown/refs/heads/main/doc/screen_recording.gif"
-    alt="An animated image of the dropdown UI" height="400"/>
+    alt="An animated image of the dropdown UI" height="400" style="height:400px;"/>
 </p>
 
 ## Features
