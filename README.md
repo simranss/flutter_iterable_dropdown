@@ -55,6 +55,13 @@ Widget build(BuildContext context) {
 }
 ```
 
+## Upcoming Features
+
+#### Custom first and last options
+These custom options won't be selectable and won't be filtered by search but can be used as clickable options or custom options in UI
+They will be optional so it will not affect the current UI if you don't use it
+They will have the same height as the rest of dropdown items
+
 ## Additional information
 
 You can contribute to this package via the [github repo](https://github.com/simranss/flutter_iterable_dropdown)
