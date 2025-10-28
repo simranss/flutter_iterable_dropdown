@@ -2,6 +2,9 @@ import 'dart:math' show min;
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
+import 'package:iterable_dropdown/src/data_models/field_config.dart'
+    show FieldConfig, WrapStyle;
+import 'package:iterable_dropdown/src/data_models/search_field_config.dart';
 import 'package:iterable_dropdown/src/iterable_dropdown_controller.dart';
 import 'package:iterable_dropdown/src/iterable_dropdown_item.dart';
 
@@ -22,37 +25,72 @@ typedef IterableDropdownSelectedItemBuilder<T> =
       void Function() delete,
     );
 
-enum WrapStyle { wrap, list }
-
 class IterableDropdown<T> extends StatefulWidget {
   const IterableDropdown.builder({
     super.key,
     this.controller,
     required this.items,
-    this.searchTextController,
     required this.itemBuilder,
-    this.selectedItemBuilder,
     this.selectionMode = SelectionMode.single,
-    this.wrapStyle = WrapStyle.wrap,
-    this.searchFocusNode,
     this.maxHeight = 350,
     this.itemHeight = 60,
-    required this.hintText,
-    this.hintStyle,
+    required this.fieldConfig,
+    this.enableSearch = true,
+    this.searchFieldConfig = const SearchFieldConfig(),
   });
 
+  /// Selection mode for your dropdown.
+  ///
+  /// Can be [SelectionMode.single] or [SelectionMode.multi].
+  ///
+  /// [SelectionMode.single] gives you a dropdown where only one item can be selected at a time.
+  ///
+  /// [SelectionMode.multi] gives you a dropdown where multiple items can be selected at a time.
   final SelectionMode selectionMode;
-  final WrapStyle wrapStyle;
+
+  /// Dropdown controller.
+  ///
+  /// This can be and should be used to control your dropdown
   final IterableDropdownController<T>? controller;
-  final TextEditingController? searchTextController;
-  final FocusNode? searchFocusNode;
+
+  /// The list of items.
+  ///
+  /// Can be an [Iterable] which means it supports [List] and other types
   final Iterable<IterableDropdownItem<T>> items;
+
+  /// The item builder for your dropdown list
   final IterableDropdownItemBuilder<T> itemBuilder;
-  final IterableDropdownSelectedItemBuilder<T>? selectedItemBuilder;
+
+  /// Each dropdown item height
+  ///
+  /// This is important to calculate the dropdown height to make it responsive
+  ///
+  /// It defaults to 60.0
   final double itemHeight;
+
+  /// The maximum height for your dropdown
+  /// This defaults to 350.0
   final double maxHeight;
-  final String hintText;
-  final TextStyle? hintStyle;
+
+  /// The field level configuration
+  ///
+  /// This contains all the selected item configuration
+  ///
+  /// You can configure the [FieldConfig.wrapStyle], [FieldConfig.spacing], ...
+  final FieldConfig fieldConfig;
+
+  /// Whether to enable the search field
+  ///
+  /// Will filter the items based on each dropdown key
+  ///
+  /// Each dropdown needs to have a unique key for uniqueness and search
+  ///
+  /// This defaults to true
+  final bool enableSearch;
+
+  /// The search field configuration
+  /// This contains all the search field configuration such as [SearchFieldConfig.inputDecorationTheme] and [SearchFieldConfig.hint]
+  final SearchFieldConfig searchFieldConfig;
 
   @override
   State<IterableDropdown<T>> createState() => _IterableDropdownState();
@@ -74,8 +112,8 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
       _controller.initialise(widget.items, widget.selectionMode);
     }
     _searchTextController =
-        widget.searchTextController ?? TextEditingController();
-    _searchFocusNode = widget.searchFocusNode ?? FocusNode();
+        widget.searchFieldConfig.controller ?? TextEditingController();
+    _searchFocusNode = widget.searchFieldConfig.focusNode ?? FocusNode();
 
     super.initState();
   }
@@ -86,10 +124,10 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
     if (widget.controller == null) {
       _controller.dispose();
     }
-    if (widget.searchTextController == null) {
+    if (widget.searchFieldConfig.controller == null) {
       _searchTextController.dispose();
     }
-    if (widget.searchFocusNode == null) {
+    if (widget.searchFieldConfig.focusNode == null) {
       _searchFocusNode.dispose();
     }
     super.dispose();
@@ -117,7 +155,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
     final size = renderBox.size;
 
     // Calculate the dynamic height
-    final textInputHeight = 60;
+    final textInputHeight = widget.enableSearch ? 60 : 0;
     final itemCount = _controller.items.length;
     final listHeight = itemCount * widget.itemHeight;
     final dropdownHeight = min(listHeight, widget.maxHeight - textInputHeight);
@@ -131,7 +169,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
     final bottomSpace = screenHeight - topSpace - size.height - 4;
 
     var overlayHeight = dropdownHeight + textInputHeight;
-    var offset = Offset(0.0, size.height + 4.0);
+    var offset = Offset(0, size.height + 4);
 
     if (overlayHeight >= bottomSpace) {
       if (topSpace > bottomSpace) {
@@ -145,6 +183,32 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
       } else {
         overlayHeight = bottomSpace - 10;
       }
+    }
+
+    var searchDecoration = InputDecoration(
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      disabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      suffixIcon: IconButton(
+        onPressed: () {
+          _searchTextController.clear();
+          _controller.onFilter('');
+        },
+        icon: Icon(Icons.close_rounded),
+      ),
+      hint: widget.searchFieldConfig.hint,
+    );
+    if (widget.enableSearch &&
+        widget.searchFieldConfig.inputDecorationTheme != null) {
+      searchDecoration = searchDecoration.applyDefaults(
+        widget.searchFieldConfig.inputDecorationTheme!,
+      );
     }
 
     _overlayEntry = OverlayEntry(
@@ -163,42 +227,19 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                 mainAxisSize: MainAxisSize.min,
                 key: _overlayKey,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 8,
-                    ),
-                    child: TextField(
-                      controller: _searchTextController,
-                      focusNode: _searchFocusNode,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        focusedErrorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        disabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        suffixIcon: IconButton(
-                          onPressed: () {
-                            _searchTextController.clear();
-                            _controller.onFilter('');
-                          },
-                          icon: Icon(Icons.close_rounded),
-                        ),
-                        hintText: 'Search options',
+                  if (widget.enableSearch)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
                       ),
-                      onChanged: _controller.onFilter,
+                      child: TextField(
+                        controller: _searchTextController,
+                        focusNode: _searchFocusNode,
+                        decoration: searchDecoration,
+                        onChanged: _controller.onFilter,
+                      ),
                     ),
-                  ),
                   Expanded(
                     child: ListenableBuilder(
                       listenable: _controller,
@@ -280,10 +321,11 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
         builder: (context, _) {
           final Widget child;
 
+          final fieldConfig = widget.fieldConfig;
           if (_controller.selectedDropdownItems.isEmpty) {
-            child = Text(widget.hintText, style: widget.hintStyle);
+            child = fieldConfig.hint;
           } else {
-            final selectedItemBuilder = widget.selectedItemBuilder;
+            final selectedItemBuilder = fieldConfig.selectedItemBuilder;
             if (widget.selectionMode == SelectionMode.multi) {
               // Create a list of Chip widgets from the selected items
               final chips = _controller.selectedDropdownItems.mapIndexed((
@@ -301,10 +343,12 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                 );
               });
 
-              child = switch (widget.wrapStyle) {
+              child = switch (fieldConfig.wrapStyle) {
                 WrapStyle.wrap => Wrap(
-                  spacing: 8, // Horizontal space between chips
-                  runSpacing: 4, // Vertical space between lines of chips
+                  spacing:
+                      fieldConfig.spacing, // Horizontal space between chips
+                  runSpacing: fieldConfig
+                      .runSpacing, // Vertical space between lines of chips
                   children: [...chips],
                 ),
                 WrapStyle.list => SizedBox(
@@ -315,7 +359,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                       ...chips.expandIndexed((i, ele) {
                         if (i == chips.length - 1) return [ele];
 
-                        return [ele, SizedBox(width: 8)];
+                        return [ele, SizedBox(width: fieldConfig.spacing)];
                       }),
                     ],
                   ),
@@ -324,7 +368,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
             } else {
               final item = _controller.selectedDropdownItems.firstOrNull;
               if (item == null) {
-                child = SizedBox();
+                child = fieldConfig.hint;
               } else {
                 final index = 0;
                 void deleteFunc() => _controller.removeSelection(item.key);

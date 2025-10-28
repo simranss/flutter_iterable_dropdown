@@ -55,7 +55,12 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: IterableDropdown<String>.builder(
           controller: _dropdownController,
-          wrapStyle: WrapStyle.list,
+          fieldConfig: FieldConfig(
+            wrapStyle: WrapStyle.list,
+            hint: Text('Select an option'),
+          ),
+          searchFieldConfig: SearchFieldConfig(hint: Text('Search options')),
+          enableSearch: false,
           items: [
             IterableDropdownItem(key: 'abc', label: 'ABC', value: 'abc'),
             IterableDropdownItem(key: 'def', label: 'DEF', value: 'def'),
@@ -77,7 +82,6 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             );
           },
-          hintText: 'Select an option',
           selectionMode: SelectionMode.multi,
         ),
       ),
