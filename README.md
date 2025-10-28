@@ -36,20 +36,25 @@ Directly use the component
 @override
 Widget build(BuildContext context) {
   return IterableDropdown<String>.builder(
+    controller: _dropdownController,
+    fieldConfig: FieldConfig(
+      hint: Text('Select an option'),
+    ),
+    searchFieldConfig: SearchFieldConfig(hint: Text('Search options')),
+    enableSearch: true,
     items: items,
-    itemBuilder: (context, index, item, selected, select) {
+    itemBuilder: (_, _, item, selected, select) {
       return ListTile(
         key: ValueKey(item.key),
         title: Text(item.label),
         onTap: select,
         trailing: Icon(
           selected
-            ? Icons.check_box_rounded
-            : Icons.check_box_outline_blank_rounded,
+              ? Icons.check_box_rounded
+              : Icons.check_box_outline_blank_rounded,
         ),
       );
     },
-    hintText: 'Select an option',
     selectionMode: SelectionMode.multi,
   );
 }

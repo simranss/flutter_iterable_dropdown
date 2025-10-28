@@ -60,7 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
             hint: Text('Select an option'),
           ),
           searchFieldConfig: SearchFieldConfig(hint: Text('Search options')),
-          enableSearch: false,
+          enableSearch: true,
           items: [
             IterableDropdownItem(key: 'abc', label: 'ABC', value: 'abc'),
             IterableDropdownItem(key: 'def', label: 'DEF', value: 'def'),
