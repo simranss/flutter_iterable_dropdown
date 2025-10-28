@@ -1,3 +1,7 @@
+# 2.0.1
+
+* Updated examples in `README.md` and the example project
+
 ## 2.0.0
 
 * Breaking changes in this version
