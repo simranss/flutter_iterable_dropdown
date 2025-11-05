@@ -67,6 +67,10 @@ These custom options won't be selectable and won't be filtered by search but can
 They will be optional so it will not affect the current UI if you don't use it
 They will have the same height as the rest of dropdown items
 
+#### CGrouping options
+options can be grouped by a certain field or a combination of fields. The same label can appear twice if they are in separate groups.
+This will present hierarchy to the options.
+
 ## Additional information
 
 You can contribute to this package via the [github repo](https://github.com/simranss/flutter_iterable_dropdown)
