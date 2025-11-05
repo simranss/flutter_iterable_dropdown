@@ -34,7 +34,7 @@ class IterableDropdown<T> extends StatefulWidget {
     this.selectionMode = SelectionMode.single,
     this.maxHeight = 350,
     this.itemHeight = 60,
-    required this.fieldConfig,
+    this.fieldConfig = const FieldConfig(),
     this.enableSearch = true,
     this.searchFieldConfig = const SearchFieldConfig(),
   });
