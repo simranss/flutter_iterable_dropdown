@@ -1,3 +1,9 @@
+# 2.0.2
+
+* Updated `README.md`
+* `FieldConfig` is no longer a required field
+* Added more dart documentations
+
 # 2.0.1
 
 * Updated examples in `README.md` and the example project
