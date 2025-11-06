@@ -8,15 +8,35 @@ import 'package:iterable_dropdown/src/data_models/search_field_config.dart';
 import 'package:iterable_dropdown/src/iterable_dropdown_controller.dart';
 import 'package:iterable_dropdown/src/iterable_dropdown_item.dart';
 
+/// A custom widget builder for selected options.
+/// Provides with [context], [index], [item], [selected], [toggleSelection]
+///
+/// [index] --> index of the option in the dropdown
+///
+/// [item] --> option.
+/// It gives the item data in [IterableDropdownItem] format
+///
+/// [selected] --> whether the option is selected or not
+///
+/// [toggleSelection] --> function to select / unselect the option
 typedef IterableDropdownItemBuilder<T> =
     Widget Function(
       BuildContext context,
       int index,
       IterableDropdownItem<T> item,
       bool selected,
-      void Function() select,
+      void Function() toggleSelection,
     );
 
+/// A custom widget builder for selected options.
+/// Provides with [context], [index], [item], [delete]
+///
+/// [index] --> index of the option in list of the selected options
+///
+/// [item] --> selected option.
+/// It gives the item data in [IterableDropdownItem] format
+///
+/// [delete] --> function to delete the selected option
 typedef IterableDropdownSelectedItemBuilder<T> =
     Widget Function(
       BuildContext context,
@@ -25,7 +45,25 @@ typedef IterableDropdownSelectedItemBuilder<T> =
       void Function() delete,
     );
 
+/// Iterable Dropdown
+///
+/// You can create a dropdown out of not just [List]s but any [Iterable]s.
+///
+/// Check individual constructors to build this dropdown
 class IterableDropdown<T> extends StatefulWidget {
+  /// Pass [items] and [itemBuilder], and you'll have a basic dropdown ready.
+  /// [items] are the Iterable of items you want to iterate over, while [itemBuilder] builds what user sees in the dropdown option.
+  /// Make sure to have unique [IterableDropdownItem.key] for all options.
+  ///
+  /// It is highly recommended to use the [IterableDropdownController] using the [controller] field for controlling any and all aspects of the dropdown.
+  ///
+  /// If you enable search, make sure to pass the string you want to search against in the [IterableDropdownItem.key] of [items].
+  ///
+  /// When space is not available at bottom, it will try to open in top.
+  /// If both don't have enough space to show all [items] or the [maxHeight], then it'll choose the side which has more space and adjust the height according to available space
+  ///
+  /// You can customise how the selected items appear using the [fieldConfig].
+  /// You can choose the wrapStyle using [FieldConfig.wrapStyle] or the spacing using [FieldConfig.spacing].
   const IterableDropdown.builder({
     super.key,
     this.controller,
@@ -56,6 +94,9 @@ class IterableDropdown<T> extends StatefulWidget {
   /// The list of items.
   ///
   /// Can be an [Iterable] which means it supports [List] and other types
+  ///
+  /// [IterableDropdownItem.key] must be unique if you want the dropdown to work properly.
+  /// Options with same key will behave abnormally (eg: both items getting selected when user only selects one)
   final Iterable<IterableDropdownItem<T>> items;
 
   /// The item builder for your dropdown list
@@ -82,6 +123,7 @@ class IterableDropdown<T> extends StatefulWidget {
   /// Whether to enable the search field
   ///
   /// Will filter the items based on each dropdown key
+  /// Make sure to pass the key as the String you want to search against
   ///
   /// Each dropdown needs to have a unique key for uniqueness and search
   ///
@@ -254,7 +296,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                             );
                             final selected = _controller.isSelected(item);
 
-                            void select() =>
+                            void toggleSelection() =>
                                 _controller.toggleSelection(item.key);
 
                             final child = widget.itemBuilder(
@@ -262,7 +304,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                               index,
                               item,
                               selected,
-                              select,
+                              toggleSelection,
                             );
 
                             return child;

@@ -4,11 +4,19 @@ import 'package:iterable_dropdown/src/iterable_dropdown.dart'
 import 'package:iterable_dropdown/src/iterable_dropdown_controller.dart'
     show SelectionMode;
 
+/// [list] --> a horizontally scrolling list of selected options.
+///
+/// [wrap] --> a wrapped list. It will move on the next line if there isn't enough space left
 enum WrapStyle { wrap, list }
 
+/// Selected field level customisation
 class FieldConfig {
   /// Wrap style for the selected items
   /// can be [WrapStyle.wrap] or [WrapStyle.list]
+  ///
+  /// [WrapStyle.list] --> a horizontally scrolling list of selected options.
+  ///
+  /// [WrapStyle.wrap] --> a wrapped list. It will move on the next line if there isn't enough space left
   final WrapStyle wrapStyle;
 
   /// An item builder for the selected items.
@@ -24,6 +32,17 @@ class FieldConfig {
   /// [runSpacing] represents the vertical spacing between the selected items. The default value is 4.0.
   final double spacing, runSpacing;
 
+  /// Default constructor
+  ///
+  /// Use [wrapStyle] for customising the [WrapStyle] of the selected options.
+  /// It has two options: [WrapStyle.wrap] and [WrapStyle.list].
+  ///
+  /// [selectedItemBuilder] is lets you customize how the selected option looks.
+  ///
+  /// [hint] is the text that is shown when no item is selected
+  ///
+  /// [spacing] represents the horizontal spacing between the selected items. The default value is 8.0.
+  /// [runSpacing] represents the vertical spacing between the selected items. The default value is 4.0.
   const FieldConfig({
     this.selectedItemBuilder,
     this.hint = const Text('Select an option'),
