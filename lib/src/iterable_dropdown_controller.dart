@@ -205,7 +205,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
     }
   }
 
-  // Returns if the key is selected
+  /// Returns if the key is selected
   bool isKeySelected(String key) => _selectedKeys.contains(key);
 
   /// Returns if the item is selected
