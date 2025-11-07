@@ -221,4 +221,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
     _selectedKeys = [];
     _initialised = true;
   }
+
+  /// The default constructor for [IterableDropdownController]
+  IterableDropdownController();
 }
