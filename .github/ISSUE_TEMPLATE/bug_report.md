@@ -23,14 +23,10 @@ A clear and concise description of what you expected to happen.
 **Screenshots**
 If applicable, add screenshots to help explain your problem.
 
-
-
 **Additional context**
 Add any other context about the problem here.
 
-
-
 **Environment (please complete the following information):**
  - Target OS: [e.g. iOS, Android, Web, Windows, ...]
- - Flutter version: [eg: 3.3.37]
+ - Flutter version: [eg: 3.35.6]
  - Package version: [eg: 2.0.1]
