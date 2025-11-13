@@ -75,6 +75,7 @@ class IterableDropdown<T> extends StatefulWidget {
     this.fieldConfig = const FieldConfig(),
     this.enableSearch = true,
     this.searchFieldConfig = const SearchFieldConfig(),
+    this.decoration,
   });
 
   /// Selection mode for your dropdown.
@@ -133,6 +134,9 @@ class IterableDropdown<T> extends StatefulWidget {
   /// The search field configuration
   /// This contains all the search field configuration such as [SearchFieldConfig.inputDecorationTheme] and [SearchFieldConfig.hint]
   final SearchFieldConfig searchFieldConfig;
+
+  /// Custom decoration for the dropdown
+  final Decoration? decoration;
 
   @override
   State<IterableDropdown<T>> createState() => _IterableDropdownState();
@@ -450,6 +454,14 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
             }
           }
 
+          Decoration dropdownDecoration = BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(8),
+          );
+          if (widget.decoration != null) {
+            dropdownDecoration = widget.decoration!;
+          }
+
           return CompositedTransformTarget(
             key: _dropdownKey,
             link: _layerLink,
@@ -459,13 +471,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                 _toggleOverlay();
               },
               child: Container(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.grey),
-                  ),
-                  contentPadding: const EdgeInsets.all(10),
-                ),
+                decoration: dropdownDecoration,
                 padding: fieldConfig.padding,
                 margin: fieldConfig.margin,
                 child: Row(
