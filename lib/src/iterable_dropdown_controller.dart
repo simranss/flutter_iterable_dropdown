@@ -16,15 +16,15 @@ enum SelectionMode { single, multi }
 /// It is recommended to use the controller along with the Widget.
 /// Provides full control over the [IterableDropdown] widget programmatically
 class IterableDropdownController<T> extends ChangeNotifier {
-  bool _initialised = false;
+  bool _initialised;
 
   /// Is the controller initialised
   bool get initialised => _initialised;
 
-  List<String> _selectedKeys = [];
-  Iterable<IterableDropdownItem<T>> _items = [];
-  Iterable<IterableDropdownItem<T>> _filteredItems = [];
-  SelectionMode _selectionMode = SelectionMode.single;
+  List<String> _selectedKeys;
+  Iterable<IterableDropdownItem<T>> _items;
+  Iterable<IterableDropdownItem<T>> _filteredItems;
+  SelectionMode _selectionMode;
 
   /// A getter for the dropdown options
   Iterable<IterableDropdownItem<T>> get items => _items.where((ele) => true);
@@ -223,5 +223,10 @@ class IterableDropdownController<T> extends ChangeNotifier {
   }
 
   /// The default constructor for [IterableDropdownController]
-  IterableDropdownController();
+  IterableDropdownController()
+    : _initialised = false,
+      _selectedKeys = [],
+      _filteredItems = [],
+      _items = [],
+      _selectionMode = SelectionMode.single;
 }
