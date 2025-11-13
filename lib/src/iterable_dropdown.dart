@@ -75,6 +75,7 @@ class IterableDropdown<T> extends StatefulWidget {
     this.fieldConfig = const FieldConfig(),
     this.enableSearch = true,
     this.searchFieldConfig = const SearchFieldConfig(),
+    this.decoration,
   });
 
   /// Selection mode for your dropdown.
@@ -133,6 +134,9 @@ class IterableDropdown<T> extends StatefulWidget {
   /// The search field configuration
   /// This contains all the search field configuration such as [SearchFieldConfig.inputDecorationTheme] and [SearchFieldConfig.hint]
   final SearchFieldConfig searchFieldConfig;
+
+  /// Custom decoration for the dropdown
+  final Decoration? decoration;
 
   @override
   State<IterableDropdown<T>> createState() => _IterableDropdownState();
@@ -194,7 +198,12 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
   void _showOverlay() {
     // Get the size and position of the dropdown button
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
-    final size = renderBox.size;
+    final size =
+        renderBox.size +
+        Offset(
+          -(widget.fieldConfig.margin?.horizontal ?? 0),
+          -(widget.fieldConfig.margin?.vertical ?? 0),
+        );
 
     // Calculate the dynamic height
     final textInputHeight = widget.enableSearch ? 60 : 0;
@@ -207,7 +216,20 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
 
     final dropdownButtonOffset = renderBox.localToGlobal(Offset.zero);
 
-    final topSpace = dropdownButtonOffset.dy;
+    final margin = widget.fieldConfig.margin;
+    final double leftMargin, topMargin;
+    if (margin is EdgeInsets) {
+      leftMargin = margin.left;
+      topMargin = margin.top;
+    } else if (margin is EdgeInsetsDirectional) {
+      leftMargin = margin.start;
+      topMargin = margin.top;
+    } else {
+      leftMargin = 0;
+      topMargin = 0;
+    }
+
+    final topSpace = dropdownButtonOffset.dy + topMargin;
     final bottomSpace = screenHeight - topSpace - size.height - 4;
 
     var overlayHeight = dropdownHeight + textInputHeight;
@@ -226,6 +248,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
         overlayHeight = bottomSpace - 10;
       }
     }
+    offset = offset + Offset(leftMargin, topMargin);
 
     var searchDecoration = InputDecoration(
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
@@ -237,6 +260,14 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
       disabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
       ),
+    );
+    if (widget.enableSearch &&
+        widget.searchFieldConfig.inputDecorationTheme != null) {
+      searchDecoration = InputDecoration().applyDefaults(
+        widget.searchFieldConfig.inputDecorationTheme!,
+      );
+    }
+    searchDecoration = searchDecoration.copyWith(
       suffixIcon: IconButton(
         onPressed: () {
           _searchTextController.clear();
@@ -246,12 +277,6 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
       ),
       hint: widget.searchFieldConfig.hint,
     );
-    if (widget.enableSearch &&
-        widget.searchFieldConfig.inputDecorationTheme != null) {
-      searchDecoration = searchDecoration.applyDefaults(
-        widget.searchFieldConfig.inputDecorationTheme!,
-      );
-    }
 
     _overlayEntry = OverlayEntry(
       builder: (context) {
@@ -429,6 +454,14 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
             }
           }
 
+          Decoration dropdownDecoration = BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(8),
+          );
+          if (widget.decoration != null) {
+            dropdownDecoration = widget.decoration!;
+          }
+
           return CompositedTransformTarget(
             key: _dropdownKey,
             link: _layerLink,
@@ -437,21 +470,17 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                 // toggle the overlay
                 _toggleOverlay();
               },
-              child: InputDecorator(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.grey),
-                  ),
-                  contentPadding: const EdgeInsets.all(10),
-                ),
+              child: Container(
+                decoration: dropdownDecoration,
+                padding: fieldConfig.padding,
+                margin: fieldConfig.margin,
                 child: Row(
                   children: [
                     Expanded(child: child),
                     IconButton(
                       onPressed: _controller.clearSelections,
                       tooltip: 'Clear All',
-                      icon: Icon(Icons.close_rounded),
+                      icon: fieldConfig.clearAllIcon,
                     ),
                   ],
                 ),
