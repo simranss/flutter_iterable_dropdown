@@ -7,7 +7,7 @@ assignees: ''
 
 ---
 
-**Describe the bug**
+**Problem Description**
 A clear and concise description of what the bug is.
 
 **To Reproduce**
@@ -26,7 +26,7 @@ If applicable, add screenshots to help explain your problem.
 **Additional context**
 Add any other context about the problem here.
 
-**Environment (please complete the following information):**
+**Environment:**
  - Target OS: [e.g. iOS, Android, Web, Windows, ...]
  - Flutter version: [eg: 3.35.6]
  - Package version: [eg: 2.0.1]
