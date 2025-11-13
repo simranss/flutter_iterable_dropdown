@@ -1,4 +1,6 @@
-import 'package:flutter/material.dart' show Text;
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart'
+    show Text, EdgeInsets, EdgeInsetsGeometry, Widget, Icons;
 import 'package:iterable_dropdown/src/iterable_dropdown.dart'
     show IterableDropdownSelectedItemBuilder;
 import 'package:iterable_dropdown/src/iterable_dropdown_controller.dart'
@@ -32,6 +34,11 @@ class FieldConfig {
   /// [runSpacing] represents the vertical spacing between the selected items. The default value is 4.0.
   final double spacing, runSpacing;
 
+  /// Padding and margin for the dropdown
+  final EdgeInsetsGeometry? padding, margin;
+
+  final Widget clearAllIcon;
+
   /// Default constructor
   ///
   /// Use [wrapStyle] for customising the [WrapStyle] of the selected options.
@@ -49,5 +56,8 @@ class FieldConfig {
     this.wrapStyle = WrapStyle.wrap,
     this.spacing = 8,
     this.runSpacing = 4,
+    this.padding = const EdgeInsets.symmetric(horizontal: 10),
+    this.margin,
+    this.clearAllIcon = const Icon(Icons.close_rounded),
   });
 }
