@@ -1,19 +1,30 @@
 A dropdown that works with all iterables instead of just lists. 
 It has multiselect features for selecting multiple items as well.
 
-<p>
-  <img src="https://raw.githubusercontent.com/simranss/flutter_iterable_dropdown/refs/heads/main/doc/screen_shot.png"
-    alt="An image of the dropdown UI" height="400" style="height:400px;" />
-  &nbsp;&nbsp;&nbsp;&nbsp;
-  <img src="https://raw.githubusercontent.com/simranss/flutter_iterable_dropdown/refs/heads/main/doc/screen_recording.gif"
-    alt="An animated image of the dropdown UI" height="400" style="height:400px;" />
-</p>
+## Screenshots
+
+| Custom Decoration                                    | Single Select                                   | Single Select with Search                                          | Multi Select                                  | Multi Select with Search                                         |
+|------------------------------------------------------|-------------------------------------------------|--------------------------------------------------------------------|-----------------------------------------------|------------------------------------------------------------------|
+| ![Custom Decoration](screenshots/customisations.png) | ![Single Select](screenshots/single_select.gif) | ![Single Select with Search](screenshots/single_search_select.gif) | ![Multi Select](screenshots/multi_select.gif) | ![Multi Select with Search](screenshots/multi_search_select.gif) |
+
 
 ## Features
 
 Use this package in your Flutter app to:
  * select multiple items in dropdowns
  * use iterables in a dropdown
+ * Have a more beautiful dropdown
+
+## Platform Support
+
+| Platform | Supported |
+|-----------|------------|
+| Android | ✅ |
+| iOS | ✅ |
+| Web | ✅ |
+| Windows | ✅ |
+| macOS | ✅ |
+| Linux | ✅ |
 
 ## Getting started
 
@@ -37,22 +48,18 @@ Directly use the component
 Widget build(BuildContext context) {
   return IterableDropdown<String>.builder(
     controller: _dropdownController,
-    fieldConfig: FieldConfig(
-      hint: Text('Select an option'),
-    ),
-    searchFieldConfig: SearchFieldConfig(hint: Text('Search options')),
-    enableSearch: true,
     items: items,
-    itemBuilder: (_, _, item, selected, select) {
+    itemBuilder: (_, _, item, selected, toggleSelection) {
       return ListTile(
         key: ValueKey(item.key),
         title: Text(item.label),
-        onTap: select,
-        trailing: Icon(
-          selected
-              ? Icons.check_box_rounded
-              : Icons.check_box_outline_blank_rounded,
-        ),
+        onTap: toggleSelection,
+        trailing: selected
+            ? Icon(Icons.check_circle_outline_rounded)
+            : Icon(Icons.circle_outlined),
+        selected: selected,
+        selectedColor: Colors.black,
+        selectedTileColor: Colors.deepPurple.shade100,
       );
     },
     selectionMode: SelectionMode.multi,
@@ -73,4 +80,4 @@ This will present hierarchy to the options.
 
 ## Additional information
 
-You can contribute to this package via the [github repo](https://github.com/simranss/flutter_iterable_dropdown)
+You can contribute to this package via the [Github Repo](https://github.com/simranss/flutter_iterable_dropdown). Check out the [Contribution Page](CONTRIBUTING.md) for reference.
