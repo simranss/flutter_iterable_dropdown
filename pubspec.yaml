@@ -34,7 +34,3 @@ platforms:
 
 # The following section is specific to Flutter packages.
 flutter: null
-
-screenshots:
-  - description: "Example screenshot 1"
-    url: https://raw.githubusercontent.com/simranss/repo-assets/refs/heads/main/flutter-iterable-dropdown/customisations.png
