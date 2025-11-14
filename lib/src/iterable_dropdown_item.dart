@@ -1,10 +1,9 @@
-import 'package:equatable/equatable.dart' show Equatable;
 import 'package:iterable_dropdown/iterable_dropdown.dart' show IterableDropdown;
 
 /// The data model for each dropdown option
 ///
 /// The [IterableDropdown] takes an [Iterable] of this data model
-class IterableDropdownItem<T> extends Equatable {
+class IterableDropdownItem<T> {
   /// Default constructor
   ///
   /// [key] --> A unique key for the dropdown option.
@@ -34,5 +33,11 @@ class IterableDropdownItem<T> extends Equatable {
   final String label;
 
   @override
-  List<Object?> get props => [key];
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is IterableDropdownItem && other.key == key;
+  }
+
+  @override
+  int get hashCode => key.hashCode;
 }

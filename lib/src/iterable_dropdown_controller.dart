@@ -1,4 +1,4 @@
-import 'dart:collection';
+import 'dart:collection' show UnmodifiableListView;
 
 import 'package:flutter/material.dart';
 import 'package:iterable_dropdown/src/iterable_dropdown_item.dart'
