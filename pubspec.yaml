@@ -1,6 +1,6 @@
 name: iterable_dropdown
 description: "A Flutter dropdown that works on iterable instead of lists. It also has multi select functionality"
-version: 2.0.2
+version: 2.0.3
 repository: https://github.com/simranss/flutter_iterable_dropdown
 
 environment:
@@ -37,4 +37,4 @@ flutter: null
 
 screenshots:
   - description: "Example screenshot 1"
-    path: doc/screen_shot.png
+    path: screenshots/customisations.png

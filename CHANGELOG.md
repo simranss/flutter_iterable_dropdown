@@ -1,3 +1,7 @@
+# 2.0.3
+
+* More UI customisations
+
 # 2.0.2
 
 * Updated `README.md`
