@@ -78,44 +78,90 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 100),
         // padding: const EdgeInsets.all(0),
         child: Column(
-          spacing: 70,
+          spacing: 30,
           children: [
-            IterableDropdown<String>.builder(
-              controller: _dropdownController1,
-              enableSearch: false,
-              items: items,
-              itemBuilder: itemBuilder,
-              selectionMode: SelectionMode.multi,
+            Column(
+              spacing: 4,
+              children: [
+                Text('Selected Items in wrap'),
+                IterableDropdown<String>.builder(
+                  controller: _dropdownController1,
+                  enableSearch: false,
+                  fieldConfig: FieldConfig(
+                    padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                  ),
+                  items: items,
+                  itemBuilder: itemBuilder,
+                  selectionMode: SelectionMode.multi,
+                ),
+              ],
             ),
-            IterableDropdown<String>.builder(
-              controller: _dropdownController2,
-              enableSearch: false,
-              fieldConfig: FieldConfig(wrapStyle: WrapStyle.list),
-              items: items,
-              itemBuilder: itemBuilder,
-              selectionMode: SelectionMode.multi,
+            const Divider(indent: 5, endIndent: 5),
+            Column(
+              spacing: 4,
+              children: [
+                Text('Selected Items in horizontal scrollable list'),
+                IterableDropdown<String>.builder(
+                  controller: _dropdownController2,
+                  enableSearch: false,
+                  fieldConfig: FieldConfig(wrapStyle: WrapStyle.list),
+                  items: items,
+                  itemBuilder: itemBuilder,
+                  selectionMode: SelectionMode.multi,
+                ),
+              ],
             ),
-            IterableDropdown<String>.builder(
-              controller: _dropdownController3,
-              enableSearch: false,
-              fieldConfig: FieldConfig(hint: Text('Custom Hint')),
-              items: items,
-              itemBuilder: itemBuilder,
-              selectionMode: SelectionMode.multi,
+            const Divider(indent: 5, endIndent: 5),
+            Column(
+              spacing: 4,
+              children: [
+                Text('Custom hint'),
+                IterableDropdown<String>.builder(
+                  controller: _dropdownController3,
+                  enableSearch: false,
+                  fieldConfig: FieldConfig(hint: Text('Custom Hint')),
+                  items: items,
+                  itemBuilder: itemBuilder,
+                  selectionMode: SelectionMode.multi,
+                ),
+              ],
             ),
-            IterableDropdown<String>.builder(
-              controller: _dropdownController4,
-              enableSearch: false,
-              fieldConfig: FieldConfig(
-                margin: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-              ),
-              items: items,
-              itemBuilder: itemBuilder,
-              selectionMode: SelectionMode.multi,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Colors.deepPurple, width: 2),
-              ),
+            const Divider(indent: 5, endIndent: 5),
+            Column(
+              spacing: 4,
+              children: [
+                Text('Dropdown customisations'),
+                IterableDropdown<String>.builder(
+                  controller: _dropdownController4,
+                  enableSearch: false,
+                  fieldConfig: FieldConfig(
+                    hint: Text(
+                      'Select an option',
+                      style: TextStyle(color: Colors.deepPurple.shade400),
+                    ),
+                    clearAllIcon: Icon(
+                      Icons.delete_outline_rounded,
+                      color: Colors.deepPurple,
+                    ),
+                  ),
+                  items: items,
+                  itemBuilder: itemBuilder,
+                  selectionMode: SelectionMode.multi,
+                  margin: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.deepPurple, width: 2),
+                    color: Colors.deepPurple.shade50,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.deepPurple.withAlpha(0x66),
+                        offset: Offset(4, 4),
+                        blurRadius: 10,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),

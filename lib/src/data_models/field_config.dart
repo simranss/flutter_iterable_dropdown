@@ -34,8 +34,8 @@ class FieldConfig {
   /// [runSpacing] represents the vertical spacing between the selected items. The default value is 4.0.
   final double spacing, runSpacing;
 
-  /// Padding and margin for the dropdown
-  final EdgeInsetsGeometry? padding, margin;
+  /// [padding] for padding for the dropdown
+  final EdgeInsetsGeometry? padding;
 
   /// Icon for clearing all selections
   final Widget clearAllIcon;
@@ -58,7 +58,6 @@ class FieldConfig {
     this.spacing = 8,
     this.runSpacing = 4,
     this.padding = const EdgeInsets.symmetric(horizontal: 10),
-    this.margin,
     this.clearAllIcon = const Icon(Icons.close_rounded),
   });
 }

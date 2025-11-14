@@ -76,6 +76,7 @@ class IterableDropdown<T> extends StatefulWidget {
     this.enableSearch = true,
     this.searchFieldConfig = const SearchFieldConfig(),
     this.decoration,
+    this.margin,
   });
 
   /// Selection mode for your dropdown.
@@ -137,6 +138,9 @@ class IterableDropdown<T> extends StatefulWidget {
 
   /// Custom decoration for the dropdown
   final Decoration? decoration;
+
+  /// Margin for the dropdown
+  final EdgeInsetsGeometry? margin;
 
   @override
   State<IterableDropdown<T>> createState() => _IterableDropdownState();
@@ -201,8 +205,8 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
     final size =
         renderBox.size +
         Offset(
-          -(widget.fieldConfig.margin?.horizontal ?? 0),
-          -(widget.fieldConfig.margin?.vertical ?? 0),
+          -(widget.margin?.horizontal ?? 0),
+          -(widget.margin?.vertical ?? 0),
         );
 
     // Calculate the dynamic height
@@ -216,7 +220,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
 
     final dropdownButtonOffset = renderBox.localToGlobal(Offset.zero);
 
-    final margin = widget.fieldConfig.margin;
+    final margin = widget.margin;
     final double leftMargin, topMargin;
     if (margin is EdgeInsets) {
       leftMargin = margin.left;
@@ -473,7 +477,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
               child: Container(
                 decoration: dropdownDecoration,
                 padding: fieldConfig.padding,
-                margin: fieldConfig.margin,
+                margin: widget.margin,
                 child: Row(
                   children: [
                     Expanded(child: child),

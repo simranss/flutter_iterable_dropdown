@@ -3,9 +3,11 @@ It has multiselect features for selecting multiple items as well.
 
 ## Screenshots
 
-| Custom Decoration                                    | Single Select                                   | Single Select with Search                                          | Multi Select                                  | Multi Select with Search                                         |
-|------------------------------------------------------|-------------------------------------------------|--------------------------------------------------------------------|-----------------------------------------------|------------------------------------------------------------------|
-| ![Custom Decoration](screenshots/customisations.png) | ![Single Select](screenshots/single_select.gif) | ![Single Select with Search](screenshots/single_search_select.gif) | ![Multi Select](screenshots/multi_select.gif) | ![Multi Select with Search](screenshots/multi_search_select.gif) |
+![Custom Decoration](screenshots/customisations.png)
+
+| Single Select                                   | Single Select with Search                                          | Multi Select                                  | Multi Select with Search                                         |
+|-------------------------------------------------|--------------------------------------------------------------------|-----------------------------------------------|------------------------------------------------------------------|
+| ![Single Select](screenshots/single_select.gif) | ![Single Select with Search](screenshots/single_search_select.gif) | ![Multi Select](screenshots/multi_select.gif) | ![Multi Select with Search](screenshots/multi_search_select.gif) |
 
 
 ## Features
@@ -18,13 +20,13 @@ Use this package in your Flutter app to:
 ## Platform Support
 
 | Platform | Supported |
-|-----------|------------|
-| Android | ✅ |
-| iOS | ✅ |
-| Web | ✅ |
-| Windows | ✅ |
-| macOS | ✅ |
-| Linux | ✅ |
+|----------|------------|
+| Android  | ✅ |
+| iOS      | ✅ |
+| Web      | ✅ |
+| Windows  | ✅ |
+| MacOS    | ✅ |
+| Linux    | ✅ |
 
 ## Getting started
 
