@@ -5,6 +5,7 @@
 /// A package for creating dropdowns out of any Iterables instead of just List
 library;
 
+export 'package:iterable_dropdown/src/data_models/custom_items.dart';
 export 'package:iterable_dropdown/src/data_models/field_config.dart';
 export 'package:iterable_dropdown/src/data_models/search_field_config.dart';
 export 'package:iterable_dropdown/src/iterable_dropdown.dart';
