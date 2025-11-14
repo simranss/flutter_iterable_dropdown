@@ -89,6 +89,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   enableSearch: false,
                   fieldConfig: FieldConfig(
                     padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                    wrapStyle: WrapStyle.wrap,
                   ),
                   items: items,
                   itemBuilder: itemBuilder,
