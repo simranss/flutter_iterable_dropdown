@@ -1,3 +1,9 @@
+# 2.0.4
+
+* `margin` will no longer be in `fieldConfig`. It will be outside with the rest of the dropdown fields
+* Default `wrapStyle` for the dropdown is not `WrapStyle.list`
+* Custom widgets for first and last options of the dropdown. These options won't get filtered by search. These options are also not selectable
+
 # 2.0.3+1
 
 * More dart docs

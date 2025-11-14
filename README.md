@@ -71,9 +71,13 @@ Widget build(BuildContext context) {
 
 ## Upcoming Features
 
-#### Grouping options
-options can be grouped by a certain field or a combination of fields. The same label can appear twice if they are in separate groups.
+### Grouping options
+Options can be grouped by a certain field or a combination of fields. The same label can appear twice if they are in separate groups.
 This will present hierarchy to the options.
+
+### Network Builder
+Options will be fetched using a future, most probably through an API. The `Future` will be called only once.
+The dropdown will be in a state of loading until the options are fetched.
 
 ## Additional information
 
