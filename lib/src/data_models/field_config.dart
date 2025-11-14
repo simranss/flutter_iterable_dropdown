@@ -37,6 +37,7 @@ class FieldConfig {
   /// Padding and margin for the dropdown
   final EdgeInsetsGeometry? padding, margin;
 
+  /// Icon for clearing all selections
   final Widget clearAllIcon;
 
   /// Default constructor
