@@ -1,3 +1,7 @@
+# 2.0.4+1
+
+* Assets and screenshots
+
 # 2.0.4
 
 * `margin` will no longer be in `fieldConfig`. It will be outside with the rest of the dropdown fields

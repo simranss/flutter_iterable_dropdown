@@ -3,7 +3,7 @@ It has multiselect features for selecting multiple items as well.
 
 ## Screenshots
 
-![Custom Decoration](https://raw.githubusercontent.com/simranss/repo-assets/refs/heads/main/flutter-iterable-dropdown/customisations.png)
+![Custom Decoration](screenshots/customisations.png)
 
 | Single Select                                                                                                                        | Single Select with Search                                                                                                                               | Multi Select                                                                                                                       | Multi Select with Search                                                                                                                              |
 |--------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
