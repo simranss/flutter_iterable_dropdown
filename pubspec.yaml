@@ -37,4 +37,4 @@ flutter: null
 
 screenshots:
   - description: "Example screenshot 1"
-    path: screenshots/customisations.png
+    url: https://raw.githubusercontent.com/simranss/repo-assets/refs/heads/main/flutter-iterable-dropdown/customisations.png

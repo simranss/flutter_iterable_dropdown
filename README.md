@@ -3,11 +3,11 @@ It has multiselect features for selecting multiple items as well.
 
 ## Screenshots
 
-![Custom Decoration](screenshots/customisations.png)
+![Custom Decoration](https://raw.githubusercontent.com/simranss/repo-assets/refs/heads/main/flutter-iterable-dropdown/customisations.png)
 
-| Single Select                                   | Single Select with Search                                          | Multi Select                                  | Multi Select with Search                                         |
-|-------------------------------------------------|--------------------------------------------------------------------|-----------------------------------------------|------------------------------------------------------------------|
-| ![Single Select](screenshots/single_select.gif) | ![Single Select with Search](screenshots/single_search_select.gif) | ![Multi Select](screenshots/multi_select.gif) | ![Multi Select with Search](screenshots/multi_search_select.gif) |
+| Single Select                                                                                                                        | Single Select with Search                                                                                                                               | Multi Select                                                                                                                       | Multi Select with Search                                                                                                                              |
+|--------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ![Single Select](https://raw.githubusercontent.com/simranss/repo-assets/refs/heads/main/flutter-iterable-dropdown/single_select.gif) | ![Single Select with Search](https://raw.githubusercontent.com/simranss/repo-assets/refs/heads/main/flutter-iterable-dropdown/single_search_select.gif) | ![Multi Select](https://raw.githubusercontent.com/simranss/repo-assets/refs/heads/main/flutter-iterable-dropdown/multi_select.gif) | ![Multi Select with Search](https://raw.githubusercontent.com/simranss/repo-assets/refs/heads/main/flutter-iterable-dropdown/multi_search_select.gif) |
 
 
 ## Features
@@ -20,13 +20,13 @@ Use this package in your Flutter app to:
 ## Platform Support
 
 | Platform | Supported |
-|----------|------------|
-| Android  | ✅ |
-| iOS      | ✅ |
-| Web      | ✅ |
-| Windows  | ✅ |
-| MacOS    | ✅ |
-| Linux    | ✅ |
+|----------|-----------|
+| Android  | ✅         |
+| iOS      | ✅         |
+| Web      | ✅         |
+| Windows  | ✅         |
+| MacOS    | ✅         |
+| Linux    | ✅         |
 
 ## Getting started
 
