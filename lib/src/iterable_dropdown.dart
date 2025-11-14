@@ -2,6 +2,7 @@ import 'dart:math' show min;
 
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
+import 'package:iterable_dropdown/src/data_models/custom_items.dart';
 import 'package:iterable_dropdown/src/data_models/field_config.dart'
     show FieldConfig, WrapStyle;
 import 'package:iterable_dropdown/src/data_models/search_field_config.dart';
@@ -76,6 +77,8 @@ class IterableDropdown<T> extends StatefulWidget {
     this.enableSearch = true,
     this.searchFieldConfig = const SearchFieldConfig(),
     this.decoration,
+    this.margin,
+    this.customItems = const CustomItems(),
   });
 
   /// Selection mode for your dropdown.
@@ -137,6 +140,13 @@ class IterableDropdown<T> extends StatefulWidget {
 
   /// Custom decoration for the dropdown
   final Decoration? decoration;
+
+  /// Margin for the dropdown
+  final EdgeInsetsGeometry? margin;
+
+  /// Custom first and last options in the dropdown
+  /// These options cannot be filtered or selected
+  final CustomItems customItems;
 
   @override
   State<IterableDropdown<T>> createState() => _IterableDropdownState();
@@ -201,8 +211,8 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
     final size =
         renderBox.size +
         Offset(
-          -(widget.fieldConfig.margin?.horizontal ?? 0),
-          -(widget.fieldConfig.margin?.vertical ?? 0),
+          -(widget.margin?.horizontal ?? 0),
+          -(widget.margin?.vertical ?? 0),
         );
 
     // Calculate the dynamic height
@@ -216,7 +226,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
 
     final dropdownButtonOffset = renderBox.localToGlobal(Offset.zero);
 
-    final margin = widget.fieldConfig.margin;
+    final margin = widget.margin;
     final double leftMargin, topMargin;
     if (margin is EdgeInsets) {
       leftMargin = margin.left;
@@ -311,13 +321,32 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                     child: ListenableBuilder(
                       listenable: _controller,
                       builder: (context, _) {
+                        final itemCount =
+                            _controller.filteredItems.length +
+                            (widget.customItems.start != null ? 1 : 0) +
+                            (widget.customItems.end != null ? 1 : 0);
+
                         return ListView.builder(
                           padding: EdgeInsets.zero,
-                          itemCount: _controller.filteredItems.length,
+                          itemCount: itemCount,
                           itemExtent: widget.itemHeight,
                           itemBuilder: (context, index) {
+                            if (index == 0 &&
+                                widget.customItems.start != null) {
+                              return widget.customItems.start!;
+                            }
+
+                            if (index == itemCount - 1 &&
+                                widget.customItems.end != null) {
+                              return widget.customItems.end!;
+                            }
+
+                            final tempIndex =
+                                index -
+                                (widget.customItems.start != null ? 1 : 0);
+
                             final item = _controller.filteredItems.elementAt(
-                              index,
+                              tempIndex,
                             );
                             final selected = _controller.isSelected(item);
 
@@ -326,7 +355,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
 
                             final child = widget.itemBuilder(
                               context,
-                              index,
+                              tempIndex,
                               item,
                               selected,
                               toggleSelection,
@@ -473,7 +502,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
               child: Container(
                 decoration: dropdownDecoration,
                 padding: fieldConfig.padding,
-                margin: fieldConfig.margin,
+                margin: widget.margin,
                 child: Row(
                   children: [
                     Expanded(child: child),

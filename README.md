@@ -3,9 +3,11 @@ It has multiselect features for selecting multiple items as well.
 
 ## Screenshots
 
-| Custom Decoration                                    | Single Select                                   | Single Select with Search                                          | Multi Select                                  | Multi Select with Search                                         |
-|------------------------------------------------------|-------------------------------------------------|--------------------------------------------------------------------|-----------------------------------------------|------------------------------------------------------------------|
-| ![Custom Decoration](screenshots/customisations.png) | ![Single Select](screenshots/single_select.gif) | ![Single Select with Search](screenshots/single_search_select.gif) | ![Multi Select](screenshots/multi_select.gif) | ![Multi Select with Search](screenshots/multi_search_select.gif) |
+![Custom Decoration](screenshots/customisations.png)
+
+| Single Select                                   | Single Select with Search                                          | Multi Select                                  | Multi Select with Search                                         |
+|-------------------------------------------------|--------------------------------------------------------------------|-----------------------------------------------|------------------------------------------------------------------|
+| ![Single Select](screenshots/single_select.gif) | ![Single Select with Search](screenshots/single_search_select.gif) | ![Multi Select](screenshots/multi_select.gif) | ![Multi Select with Search](screenshots/multi_search_select.gif) |
 
 
 ## Features
@@ -18,13 +20,13 @@ Use this package in your Flutter app to:
 ## Platform Support
 
 | Platform | Supported |
-|-----------|------------|
-| Android | ✅ |
-| iOS | ✅ |
-| Web | ✅ |
-| Windows | ✅ |
-| macOS | ✅ |
-| Linux | ✅ |
+|----------|------------|
+| Android  | ✅ |
+| iOS      | ✅ |
+| Web      | ✅ |
+| Windows  | ✅ |
+| MacOS    | ✅ |
+| Linux    | ✅ |
 
 ## Getting started
 
@@ -68,11 +70,6 @@ Widget build(BuildContext context) {
 ```
 
 ## Upcoming Features
-
-#### Custom first and last options
-These custom options won't be selectable and won't be filtered by search but can be used as clickable options or custom options in UI
-They will be optional so it will not affect the current UI if you don't use it
-They will have the same height as the rest of dropdown items
 
 #### Grouping options
 options can be grouped by a certain field or a combination of fields. The same label can appear twice if they are in separate groups.
