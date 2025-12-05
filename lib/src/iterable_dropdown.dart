@@ -149,6 +149,8 @@ class IterableDropdown<T> extends StatefulWidget {
 
   /// Custom first and last options in the dropdown
   /// These options cannot be filtered or selected
+  ///
+  /// Consider them pinned rows that can be used as headers or actions
   final CustomItems customItems;
 
   @override
@@ -479,12 +481,12 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                 return Chip(
                   deleteButtonTooltipMessage: '',
                   label: Text(item.label, style: chipConfig.labelStyle),
-                  onDeleted: chipConfig.showDeleteButton ? deleteFunc : null,
+                  onDeleted: chipConfig.showDeleteIcon ? deleteFunc : null,
                   backgroundColor: chipConfig.backgroundColor,
-                  deleteIcon: chipConfig.showDeleteButton
+                  deleteIcon: chipConfig.showDeleteIcon
                       ? chipConfig.deleteIcon
                       : null,
-                  deleteIconColor: chipConfig.showDeleteButton
+                  deleteIconColor: chipConfig.showDeleteIcon
                       ? chipConfig.deleteIconColor
                       : null,
                 );

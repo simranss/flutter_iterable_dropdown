@@ -251,12 +251,14 @@ class IterableDropdownController<T> extends ChangeNotifier {
   }
 
   /// Detaches dropdown visibility handlers
+  ///
+  /// For internal use by [IterableDropdown]
   void detachDropdownVisibilityHandlers() {
     _openDropdownCallback = null;
     _closeDropdownCallback = null;
   }
 
-  /// The default constructor for [IterableDropdownController]
+  /// Default constructor for [IterableDropdownController]
   IterableDropdownController()
     : _initialised = false,
       _selectedKeys = [],

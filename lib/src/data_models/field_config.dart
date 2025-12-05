@@ -11,6 +11,7 @@ class FieldConfig {
   /// padding for the dropdown field
   final EdgeInsetsGeometry? padding;
 
+  /// Whether you want to display the [clearAllIcon]
   final bool showClearAllIcon;
 
   /// Icon for clearing all selections
@@ -19,11 +20,23 @@ class FieldConfig {
   /// iconSize for [clearAllIcon]
   final double? clearAllIconSize;
 
+  /// color for [clearAllIcon]
   final Color? clearAllIconColor;
 
-  /// Default constructor
+  /// Default constructor for the [FieldConfig].
+  /// Used for dropdown field customisations
   ///
-  /// [hint] is the text that is shown when no item is selected
+  /// [hint] --> The text that is shown when no item is selected
+  ///
+  /// [padding] --> padding for the dropdown field
+  ///
+  /// [showClearAllIcon] --> Whether you want to display the [clearAllIcon]
+  ///
+  /// [clearAllIcon] --> Icon for clearing all selections
+  ///
+  /// [clearAllIconSize] --> iconSize for [clearAllIcon]
+  ///
+  /// [clearAllIconColor] --> color for [clearAllIcon]
   const FieldConfig({
     this.hint = const Text('Select an option'),
     this.padding = const EdgeInsets.symmetric(horizontal: 10),

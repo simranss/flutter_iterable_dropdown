@@ -25,14 +25,20 @@ class SearchFieldConfig {
   /// InputDecorationTheme for the search field
   final InputDecorationThemeData? inputDecorationTheme;
 
+  /// Whether to show the [clearIcon]
   final bool showClearAllIcon;
+
+  /// Suffix icon to clear all text entered
   final Widget clearIcon;
 
+  /// iconSize for [clearIcon]
   final double? clearIconSize;
 
+  /// color for [clearIcon]
   final Color? clearIconColor;
 
-  /// Default constructor
+  /// Default constructor for [SearchFieldConfig].
+  /// Used for customising and configuring the search box when you open the dropdown
   ///
   /// [controller] --> [TextEditingController] to control the text in the field
   ///
@@ -41,6 +47,14 @@ class SearchFieldConfig {
   /// [hint] --> [Text] to display as hint text
   ///
   /// [inputDecorationTheme] --> [InputDecorationTheme] to customize the appearance of the field
+  ///
+  /// [showClearAllIcon] --> Whether to show the [clearIcon]
+  ///
+  /// [clearIcon] --> Suffix icon to clear all text entered
+  ///
+  /// [clearIconSize] --> iconSize for [clearIcon]
+  ///
+  /// [clearIconColor] --> color for [clearIcon]
   const SearchFieldConfig({
     this.controller,
     this.focusNode,

@@ -120,15 +120,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 Text('Custom hint'),
                 IterableDropdown<String>.builder(
                   controller: _dropdownController3,
-                  enableSearch: true,
-                  fieldConfig: FieldConfig(
-                    hint: Text('Custom Hint'),
-                    showClearAllIcon: false,
-                  ),
-                  selectedItemConfig: SelectedItemConfig(
-                    chipConfig: ChipConfig(showDeleteButton: false),
-                  ),
-                  searchFieldConfig: SearchFieldConfig(showClearAllIcon: false),
+                  enableSearch: false,
+                  fieldConfig: FieldConfig(hint: Text('Custom Hint')),
                   items: items,
                   itemBuilder: itemBuilder,
                   selectionMode: SelectionMode.multi,

@@ -24,6 +24,13 @@ class SelectedItemConfig {
   /// The default value is [WrapStyle.list]
   final WrapStyle wrapStyle;
 
+  /// How do you want to display the selected items
+  ///
+  /// [ItemBuilderType.chip] --> selected item will be displayed as the default chip. Can be configured through the [chipConfig]
+  ///
+  /// [ItemBuilderType.custom] --> selected item will be displayed as a custom item provided by the user using [selectedItemBuilder]
+  ///
+  /// The default value is [ItemBuilderType.chip]
   final ItemBuilderType selectedItemBuilderType;
 
   /// An item builder for the selected items.
@@ -35,17 +42,23 @@ class SelectedItemConfig {
   /// [runSpacing] represents the vertical spacing between the selected items. The default value is 4.0.
   final double spacing, runSpacing;
 
+  /// Used when the [selectedItemBuilderType] is [ItemBuilderType.chip]
+  ///
+  /// It provides all the configurations and customisations regarding the selected item chip
   final ChipConfig chipConfig;
 
-  /// Default constructor
+  /// Default constructor for [SelectedItemConfig].
+  /// Used for customising and configuring the selected items
   ///
   /// Use [wrapStyle] for customising the [WrapStyle] of the selected options.
   /// It has two options: [WrapStyle.wrap] and [WrapStyle.list].
   ///
-  /// [selectedItemBuilder] is lets you customize how the selected option looks.
+  /// [selectedItemBuilder] is lets you customize how the selected option looks. To use this, make sure to set [selectedItemBuilderType] to [ItemBuilderType.custom]
   ///
   /// [spacing] represents the horizontal spacing between the selected items. The default value is 8.0.
   /// [runSpacing] represents the vertical spacing between the selected items. The default value is 4.0.
+  ///
+  /// [chipConfig] is used when the [selectedItemBuilderType] is [ItemBuilderType.chip], and is used the look and feel for the selected item chips
   const SelectedItemConfig({
     this.selectedItemBuilderType = ItemBuilderType.chip,
     this.wrapStyle = WrapStyle.list,
