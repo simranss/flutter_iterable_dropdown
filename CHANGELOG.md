@@ -1,3 +1,14 @@
+# 2.0.5
+**05-12-2025**
+
+* Icons to have a corresponding iconSize and iconColor outside the icon definition.
+* Fields related to selected items have now been grouped and moved to `selectedItemConfig`
+* More customisations for the selected item chip. 
+* Control given if you want to show the suffix icon or not for chips, search and the dropdown itself
+* Added `deselectWhere()` to the controller
+* The controller can programmatically open or close the dropdown
+* Improved documentation
+
 # 2.0.4+1
 
 * Assets and screenshots
