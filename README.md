@@ -69,6 +69,13 @@ Widget build(BuildContext context) {
 }
 ```
 
+You can also open or close the dropdown programmatically by interacting with the controller.
+
+```dart
+_dropdownController.openDropdown(); // show overlay
+_dropdownController.closeDropdown(); // hide overlay
+```
+
 ## Upcoming Features
 
 ### Grouping options

@@ -25,6 +25,8 @@ class IterableDropdownController<T> extends ChangeNotifier {
   Iterable<IterableDropdownItem<T>> _items;
   Iterable<IterableDropdownItem<T>> _filteredItems;
   SelectionMode _selectionMode;
+  VoidCallback? _openDropdownCallback;
+  VoidCallback? _closeDropdownCallback;
 
   /// A getter for the dropdown options
   Iterable<IterableDropdownItem<T>> get items => _items.where((ele) => true);
@@ -231,11 +233,36 @@ class IterableDropdownController<T> extends ChangeNotifier {
     _initialised = true;
   }
 
+  /// Opens the dropdown overlay if it is currently hidden
+  void open() => _openDropdownCallback?.call();
+
+  /// Closes the dropdown overlay if it is currently visible
+  void close() => _closeDropdownCallback?.call();
+
+  /// Attach dropdown visibility handlers
+  ///
+  /// For internal use by [IterableDropdown]
+  void attachDropdownVisibilityHandlers({
+    required VoidCallback openDropdown,
+    required VoidCallback closeDropdown,
+  }) {
+    _openDropdownCallback = openDropdown;
+    _closeDropdownCallback = closeDropdown;
+  }
+
+  /// Detaches dropdown visibility handlers
+  void detachDropdownVisibilityHandlers() {
+    _openDropdownCallback = null;
+    _closeDropdownCallback = null;
+  }
+
   /// The default constructor for [IterableDropdownController]
   IterableDropdownController()
     : _initialised = false,
       _selectedKeys = [],
       _filteredItems = [],
       _items = [],
-      _selectionMode = SelectionMode.single;
+      _selectionMode = SelectionMode.single,
+      _openDropdownCallback = null,
+      _closeDropdownCallback = null;
 }

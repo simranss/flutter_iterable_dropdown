@@ -174,12 +174,19 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
         widget.searchFieldConfig.controller ?? TextEditingController();
     _searchFocusNode = widget.searchFieldConfig.focusNode ?? FocusNode();
 
+    _controller.attachDropdownVisibilityHandlers(
+      openDropdown: _openOverlay,
+      closeDropdown: _closeOverlay,
+    );
+
     super.initState();
   }
 
   @override
   void dispose() {
-    _hideOverlay();
+    _closeOverlay();
+    _controller.detachDropdownVisibilityHandlers();
+
     if (widget.controller == null) {
       _controller.dispose();
     }
@@ -197,10 +204,22 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
 
   void _toggleOverlay() {
     if (_overlayEntry == null) {
-      _showOverlay();
+      _openOverlay();
     } else {
-      _hideOverlay();
+      _closeOverlay();
     }
+  }
+
+  void _openOverlay() {
+    if (_overlayEntry != null) return;
+
+    _showOverlay();
+  }
+
+  void _closeOverlay() {
+    if (_overlayEntry == null) return;
+
+    _hideOverlay();
   }
 
   void _hideOverlay() {
@@ -413,12 +432,12 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
             if (!dropdownBounds.contains(clickPosition)) {
               _searchTextController.clear();
               _searchFocusNode.unfocus();
-              _hideOverlay();
+              _closeOverlay();
             }
           } else {
             _searchTextController.clear();
             _searchFocusNode.unfocus();
-            _hideOverlay();
+            _closeOverlay();
           }
         }
       },

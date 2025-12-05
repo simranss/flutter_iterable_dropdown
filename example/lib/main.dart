@@ -34,7 +34,6 @@ class _MyHomePageState extends State<MyHomePage> {
   late final IterableDropdownController<String> _dropdownController2;
   late final IterableDropdownController<String> _dropdownController3;
   late final IterableDropdownController<String> _dropdownController4;
-  late final IterableDropdownController<String> _dropdownController5;
 
   @override
   void initState() {
@@ -42,7 +41,6 @@ class _MyHomePageState extends State<MyHomePage> {
     _dropdownController2 = IterableDropdownController();
     _dropdownController3 = IterableDropdownController();
     _dropdownController4 = IterableDropdownController();
-    _dropdownController5 = IterableDropdownController();
     super.initState();
   }
 
@@ -52,7 +50,6 @@ class _MyHomePageState extends State<MyHomePage> {
     _dropdownController2.dispose();
     _dropdownController3.dispose();
     _dropdownController4.dispose();
-    _dropdownController5.dispose();
     super.dispose();
   }
 
@@ -177,6 +174,19 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FloatingActionButton(
+            onPressed: () => _dropdownController4.open(),
+            child: Icon(Icons.open_in_full_rounded),
+          ),
+          FloatingActionButton(
+            onPressed: () => _dropdownController4.close(),
+            child: Icon(Icons.close_fullscreen_rounded),
+          ),
+        ],
       ),
     );
   }
