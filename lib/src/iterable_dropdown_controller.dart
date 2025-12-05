@@ -143,8 +143,10 @@ class IterableDropdownController<T> extends ChangeNotifier {
   /// If the keys are empty, nothing happens
   void removeSelections(Iterable<String> keys) {
     if (keys.isEmpty) return;
+
     _selectedKeys = [..._selectedKeys]
-      ..removeWhere((key) => keys.contains(key));
+      ..removeWhere((selectedKey) => keys.contains(selectedKey));
+
     notifyListeners();
   }
 
@@ -158,11 +160,13 @@ class IterableDropdownController<T> extends ChangeNotifier {
   /// If the keys are empty, nothing happens
   void setSelections(Iterable<String> keys) {
     if (keys.isEmpty) return;
+
     if (_selectionMode == SelectionMode.single) {
       _selectedKeys = [keys.first];
     } else {
       _selectedKeys = keys.toSet().toList();
     }
+
     notifyListeners();
   }
 
@@ -196,13 +200,18 @@ class IterableDropdownController<T> extends ChangeNotifier {
       return shouldSelect ? ele.key : null;
     }).nonNulls;
 
-    if (keys.isEmpty) return;
+    setSelections(keys);
+  }
 
-    if (_selectionMode == SelectionMode.single) {
-      _selectedKeys = [keys.first];
-    } else {
-      _selectedKeys = {..._selectedKeys, ...keys}.toList();
-    }
+  /// de-select all items which fulfill the predicate
+  void deselectWhere(bool Function(IterableDropdownItem<T> item) predicate) {
+    final keys = _items.map((ele) {
+      final shouldDeselect = predicate(ele);
+
+      return shouldDeselect ? ele.key : null;
+    }).nonNulls;
+
+    removeSelections(keys);
   }
 
   /// Returns if the key is selected
