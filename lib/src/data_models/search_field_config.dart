@@ -1,5 +1,13 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart' show InputDecorationTheme;
+import 'package:flutter/material.dart'
+    show
+        InputDecorationThemeData,
+        Icons,
+        TextEditingController,
+        FocusNode,
+        Text,
+        Widget,
+        Color,
+        Icon;
 
 /// Search Field Configuration
 class SearchFieldConfig {
@@ -15,7 +23,14 @@ class SearchFieldConfig {
   final Text hint;
 
   /// InputDecorationTheme for the search field
-  final InputDecorationTheme? inputDecorationTheme;
+  final InputDecorationThemeData? inputDecorationTheme;
+
+  final bool showClearAllIcon;
+  final Widget clearIcon;
+
+  final double? clearIconSize;
+
+  final Color? clearIconColor;
 
   /// Default constructor
   ///
@@ -31,5 +46,9 @@ class SearchFieldConfig {
     this.focusNode,
     this.hint = const Text('Search options'),
     this.inputDecorationTheme,
+    this.showClearAllIcon = true,
+    this.clearIcon = const Icon(Icons.close_rounded),
+    this.clearIconSize,
+    this.clearIconColor,
   });
 }

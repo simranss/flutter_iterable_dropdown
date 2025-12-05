@@ -3,9 +3,9 @@ import 'dart:math' show min;
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
 import 'package:iterable_dropdown/src/data_models/custom_items.dart';
-import 'package:iterable_dropdown/src/data_models/field_config.dart'
-    show FieldConfig, WrapStyle;
+import 'package:iterable_dropdown/src/data_models/field_config.dart';
 import 'package:iterable_dropdown/src/data_models/search_field_config.dart';
+import 'package:iterable_dropdown/src/data_models/selected_item_config.dart';
 import 'package:iterable_dropdown/src/iterable_dropdown_controller.dart';
 import 'package:iterable_dropdown/src/iterable_dropdown_item.dart';
 
@@ -79,6 +79,7 @@ class IterableDropdown<T> extends StatefulWidget {
     this.decoration,
     this.margin,
     this.customItems = const CustomItems(),
+    this.selectedItemConfig = const SelectedItemConfig(),
   });
 
   /// Selection mode for your dropdown.
@@ -137,6 +138,8 @@ class IterableDropdown<T> extends StatefulWidget {
   /// The search field configuration
   /// This contains all the search field configuration such as [SearchFieldConfig.inputDecorationTheme] and [SearchFieldConfig.hint]
   final SearchFieldConfig searchFieldConfig;
+
+  final SelectedItemConfig selectedItemConfig;
 
   /// Custom decoration for the dropdown
   final Decoration? decoration;
@@ -277,14 +280,21 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
         widget.searchFieldConfig.inputDecorationTheme!,
       );
     }
+    if (widget.searchFieldConfig.showClearAllIcon) {
+      searchDecoration = searchDecoration.copyWith(
+        suffixIcon: IconButton(
+          onPressed: () {
+            _searchTextController.clear();
+            _controller.onFilter('');
+          },
+          icon: widget.searchFieldConfig.clearIcon,
+          iconSize: widget.searchFieldConfig.clearIconSize,
+          color: widget.searchFieldConfig.clearIconColor,
+        ),
+      );
+    }
+
     searchDecoration = searchDecoration.copyWith(
-      suffixIcon: IconButton(
-        onPressed: () {
-          _searchTextController.clear();
-          _controller.onFilter('');
-        },
-        icon: Icon(Icons.close_rounded),
-      ),
       hint: widget.searchFieldConfig.hint,
     );
 
@@ -418,10 +428,22 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
           final Widget child;
 
           final fieldConfig = widget.fieldConfig;
+          final selectedItemConfig = widget.selectedItemConfig;
+
           if (_controller.selectedDropdownItems.isEmpty) {
             child = fieldConfig.hint;
           } else {
-            final selectedItemBuilder = fieldConfig.selectedItemBuilder;
+            final selectedItemBuilder = selectedItemConfig.selectedItemBuilder;
+            final chipConfig = selectedItemConfig.chipConfig;
+
+            assert(
+              (selectedItemConfig.selectedItemBuilderType ==
+                          ItemBuilderType.custom &&
+                      selectedItemBuilder != null) ||
+                  selectedItemConfig.selectedItemBuilderType ==
+                      ItemBuilderType.chip,
+            );
+
             if (widget.selectionMode == SelectionMode.multi) {
               // Create a list of Chip widgets from the selected items
               final chips = _controller.selectedDropdownItems.mapIndexed((
@@ -429,22 +451,30 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                 item,
               ) {
                 void deleteFunc() => _controller.removeSelection(item.key);
-                if (selectedItemBuilder != null) {
+                if (selectedItemBuilder != null &&
+                    selectedItemConfig.selectedItemBuilderType ==
+                        ItemBuilderType.custom) {
                   return selectedItemBuilder(context, index, item, deleteFunc);
                 }
+
                 return Chip(
                   deleteButtonTooltipMessage: '',
-                  label: Text(item.label),
-                  onDeleted: deleteFunc,
+                  label: Text(item.label, style: chipConfig.labelStyle),
+                  onDeleted: chipConfig.showDeleteButton ? deleteFunc : null,
+                  backgroundColor: chipConfig.backgroundColor,
+                  deleteIcon: chipConfig.showDeleteButton
+                      ? chipConfig.deleteIcon
+                      : null,
+                  deleteIconColor: chipConfig.showDeleteButton
+                      ? chipConfig.deleteIconColor
+                      : null,
                 );
               });
 
-              child = switch (fieldConfig.wrapStyle) {
+              child = switch (selectedItemConfig.wrapStyle) {
                 WrapStyle.wrap => Wrap(
-                  spacing:
-                      fieldConfig.spacing, // Horizontal space between chips
-                  runSpacing: fieldConfig
-                      .runSpacing, // Vertical space between lines of chips
+                  spacing: selectedItemConfig.spacing,
+                  runSpacing: selectedItemConfig.runSpacing,
                   children: [...chips],
                 ),
                 WrapStyle.list => SizedBox(
@@ -455,7 +485,10 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                       ...chips.expandIndexed((i, ele) {
                         if (i == chips.length - 1) return [ele];
 
-                        return [ele, SizedBox(width: fieldConfig.spacing)];
+                        return [
+                          ele,
+                          SizedBox(width: selectedItemConfig.spacing),
+                        ];
                       }),
                     ],
                   ),
@@ -506,11 +539,14 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                 child: Row(
                   children: [
                     Expanded(child: child),
-                    IconButton(
-                      onPressed: _controller.clearSelections,
-                      tooltip: 'Clear All',
-                      icon: fieldConfig.clearAllIcon,
-                    ),
+                    if (fieldConfig.showClearAllIcon)
+                      IconButton(
+                        onPressed: _controller.clearSelections,
+                        tooltip: 'Clear All',
+                        icon: fieldConfig.clearAllIcon,
+                        iconSize: fieldConfig.clearAllIconSize,
+                        color: fieldConfig.clearAllIconColor,
+                      ),
                   ],
                 ),
               ),

@@ -89,6 +89,8 @@ class _MyHomePageState extends State<MyHomePage> {
                   enableSearch: false,
                   fieldConfig: FieldConfig(
                     padding: EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+                  ),
+                  selectedItemConfig: SelectedItemConfig(
                     wrapStyle: WrapStyle.wrap,
                   ),
                   items: items,
@@ -105,7 +107,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 IterableDropdown<String>.builder(
                   controller: _dropdownController2,
                   enableSearch: false,
-                  fieldConfig: FieldConfig(wrapStyle: WrapStyle.list),
+                  selectedItemConfig: SelectedItemConfig(
+                    wrapStyle: WrapStyle.list,
+                  ),
                   items: items,
                   itemBuilder: itemBuilder,
                   selectionMode: SelectionMode.multi,
@@ -119,8 +123,15 @@ class _MyHomePageState extends State<MyHomePage> {
                 Text('Custom hint'),
                 IterableDropdown<String>.builder(
                   controller: _dropdownController3,
-                  enableSearch: false,
-                  fieldConfig: FieldConfig(hint: Text('Custom Hint')),
+                  enableSearch: true,
+                  fieldConfig: FieldConfig(
+                    hint: Text('Custom Hint'),
+                    showClearAllIcon: false,
+                  ),
+                  selectedItemConfig: SelectedItemConfig(
+                    chipConfig: ChipConfig(showDeleteButton: false),
+                  ),
+                  searchFieldConfig: SearchFieldConfig(showClearAllIcon: false),
                   items: items,
                   itemBuilder: itemBuilder,
                   selectionMode: SelectionMode.multi,
