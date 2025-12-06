@@ -34,6 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
   late final IterableDropdownController<String> _dropdownController2;
   late final IterableDropdownController<String> _dropdownController3;
   late final IterableDropdownController<String> _dropdownController4;
+  late final IterableDropdownController<String> _dropdownController5;
 
   @override
   void initState() {
@@ -41,6 +42,7 @@ class _MyHomePageState extends State<MyHomePage> {
     _dropdownController2 = IterableDropdownController();
     _dropdownController3 = IterableDropdownController();
     _dropdownController4 = IterableDropdownController();
+    _dropdownController5 = IterableDropdownController();
     super.initState();
   }
 
@@ -50,21 +52,22 @@ class _MyHomePageState extends State<MyHomePage> {
     _dropdownController2.dispose();
     _dropdownController3.dispose();
     _dropdownController4.dispose();
+    _dropdownController5.dispose();
     super.dispose();
   }
 
+  final _items = [
+    IterableDropdownItem(key: 'abc', label: 'ABC', value: 'abc'),
+    IterableDropdownItem(key: 'def', label: 'DEF', value: 'def'),
+    IterableDropdownItem(key: 'ghi', label: 'GHI', value: 'ghi'),
+    IterableDropdownItem(key: 'jkl', label: 'JKL', value: 'jkl'),
+    IterableDropdownItem(key: 'mno', label: 'MNO', value: 'mno'),
+    IterableDropdownItem(key: 'pqr', label: 'PQR', value: 'pqr'),
+    IterableDropdownItem(key: 'stu', label: 'STU', value: 'stu'),
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final items = [
-      IterableDropdownItem(key: 'abc', label: 'ABC', value: 'abc'),
-      IterableDropdownItem(key: 'def', label: 'DEF', value: 'def'),
-      IterableDropdownItem(key: 'ghi', label: 'GHI', value: 'ghi'),
-      IterableDropdownItem(key: 'jkl', label: 'JKL', value: 'jkl'),
-      IterableDropdownItem(key: 'mno', label: 'MNO', value: 'mno'),
-      IterableDropdownItem(key: 'pqr', label: 'PQR', value: 'pqr'),
-      IterableDropdownItem(key: 'stu', label: 'STU', value: 'stu'),
-    ];
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -90,7 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   selectedItemConfig: SelectedItemConfig(
                     wrapStyle: WrapStyle.wrap,
                   ),
-                  items: items,
+                  items: _items,
                   itemBuilder: itemBuilder,
                   selectionMode: SelectionMode.multi,
                 ),
@@ -107,7 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   selectedItemConfig: SelectedItemConfig(
                     wrapStyle: WrapStyle.list,
                   ),
-                  items: items,
+                  items: _items,
                   itemBuilder: itemBuilder,
                   selectionMode: SelectionMode.multi,
                 ),
@@ -122,7 +125,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   controller: _dropdownController3,
                   enableSearch: false,
                   fieldConfig: FieldConfig(hint: Text('Custom Hint')),
-                  items: items,
+                  items: _items,
                   itemBuilder: itemBuilder,
                   selectionMode: SelectionMode.multi,
                 ),
@@ -146,7 +149,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       color: Colors.deepPurple,
                     ),
                   ),
-                  items: items,
+                  items: _items,
                   itemBuilder: itemBuilder,
                   selectionMode: SelectionMode.multi,
                   margin: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
@@ -165,23 +168,58 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
+            const Divider(indent: 5, endIndent: 5),
+            Column(
+              spacing: 4,
+              children: [
+                Text('Future'),
+                IterableDropdown<String>.future(
+                  controller: _dropdownController5,
+                  future: fetchItems,
+                  itemBuilder: itemBuilder,
+                  selectionMode: SelectionMode.multi,
+                ),
+              ],
+            ),
           ],
         ),
       ),
-      floatingActionButton: Column(
+      floatingActionButton: Row(
         mainAxisSize: MainAxisSize.min,
+        spacing: 10,
         children: [
           FloatingActionButton(
-            onPressed: () => _dropdownController4.open(),
+            onPressed: () => _dropdownController5.open(),
             child: Icon(Icons.open_in_full_rounded),
           ),
           FloatingActionButton(
-            onPressed: () => _dropdownController4.close(),
+            onPressed: () => _dropdownController5.close(),
             child: Icon(Icons.close_fullscreen_rounded),
+          ),
+          FloatingActionButton(
+            onPressed: () => _dropdownController5.refresh(
+              future: () => fetchItems(const Duration(seconds: 10)),
+            ),
+            child: Icon(Icons.refresh_rounded),
           ),
         ],
       ),
     );
+  }
+
+  Future<Iterable<IterableDropdownItem<String>>> fetchItems([
+    Duration duration = const Duration(seconds: 3),
+  ]) async {
+    try {
+      // some future
+      await Future.delayed(duration);
+
+      return _items;
+    } catch (e) {
+      print("error: $e");
+    }
+
+    return [];
   }
 
   Widget itemBuilder(

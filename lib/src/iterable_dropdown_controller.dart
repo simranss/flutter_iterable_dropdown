@@ -17,9 +17,14 @@ enum SelectionMode { single, multi }
 /// Provides full control over the [IterableDropdown] widget programmatically
 class IterableDropdownController<T> extends ChangeNotifier {
   bool _initialised;
+  bool _isLoading;
+  Future<Iterable<IterableDropdownItem<T>>> Function()? _itemsFuture;
 
   /// Is the controller initialised
   bool get initialised => _initialised;
+
+  /// Whether the dropdown items are currently being fetched
+  bool get isLoading => _isLoading;
 
   List<String> _selectedKeys;
   Iterable<IterableDropdownItem<T>> _items;
@@ -70,13 +75,14 @@ class IterableDropdownController<T> extends ChangeNotifier {
   /// Sets the Iterable as the new dropdown options
   ///
   /// This removes all the previous selections and items
-  void setItems(Iterable<IterableDropdownItem<T>> items) {
-    if (items.isEmpty) {
-      throw Exception('Items cannot be empty');
-    }
+  void setItems(
+    Iterable<IterableDropdownItem<T>> items, {
+    bool resetSelection = true,
+  }) {
     _items = items;
     _filteredItems = items;
-    _selectedKeys = [];
+    if (resetSelection) _selectedKeys = [];
+
     notifyListeners();
   }
 
@@ -225,12 +231,44 @@ class IterableDropdownController<T> extends ChangeNotifier {
   /// Initialise the dropdown
   ///
   /// This is by default called once when building the dropdown component for the first tine
-  void initialise(Iterable<IterableDropdownItem<T>> items, SelectionMode mode) {
-    _items = items;
-    _filteredItems = items;
+  void initialise(
+    SelectionMode mode, {
+    Iterable<IterableDropdownItem<T>>? items,
+    Future<Iterable<IterableDropdownItem<T>>> Function()? future,
+    bool resetSelection = true,
+  }) {
+    if (_initialised || _isLoading) return;
+
+    if (items == null && future == null) {
+      throw ArgumentError(
+        'Either items or future must be provided for initialisation.',
+      );
+    }
+
+    if (items != null && future != null) {
+      throw ArgumentError(
+        'Both items and future cannot be provided together for initialisation.',
+      );
+    }
+
     _selectionMode = mode;
-    _selectedKeys = [];
-    _initialised = true;
+
+    if (items != null) {
+      _items = items;
+      _filteredItems = items;
+      if (resetSelection) _selectedKeys = [];
+      _initialised = true;
+      _isLoading = false;
+      return;
+    }
+
+    if (future != null) {
+      _itemsFuture = future;
+
+      refresh(resetSelection: resetSelection).then((_) {
+        _initialised = true;
+      });
+    }
   }
 
   /// Opens the dropdown overlay if it is currently hidden
@@ -258,10 +296,53 @@ class IterableDropdownController<T> extends ChangeNotifier {
     _closeDropdownCallback = null;
   }
 
+  Future<void> _fetchItems(
+    Future<Iterable<IterableDropdownItem<T>>> Function()? future,
+    bool resetSelection,
+  ) async {
+    if (future != null) {
+      _itemsFuture = future;
+    }
+
+    if (_itemsFuture == null) {
+      throw StateError('No future configured for fetching items.');
+    }
+    if (_isLoading) return;
+
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final items = await _itemsFuture!();
+      _items = items;
+      _filteredItems = items;
+      if (resetSelection) _selectedKeys = [];
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  /// Fetch items again using the provided future.
+  Future<void> refresh({
+    Future<Iterable<IterableDropdownItem<T>>> Function()? future,
+    bool resetSelection = true,
+  }) {
+    try {
+      return _fetchItems(future, resetSelection);
+    } catch (_) {
+      rethrow;
+    }
+  }
+
   /// Default constructor for [IterableDropdownController]
-  IterableDropdownController()
+  IterableDropdownController([Iterable<String>? selectedKeys])
     : _initialised = false,
-      _selectedKeys = [],
+      _isLoading = false,
+      _selectedKeys = [...?selectedKeys],
       _filteredItems = [],
       _items = [],
       _selectionMode = SelectionMode.single,

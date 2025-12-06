@@ -68,7 +68,7 @@ class IterableDropdown<T> extends StatefulWidget {
   const IterableDropdown.builder({
     super.key,
     this.controller,
-    required this.items,
+    required Iterable<IterableDropdownItem<T>> items,
     required this.itemBuilder,
     this.selectionMode = SelectionMode.single,
     this.maxHeight = 350,
@@ -80,7 +80,38 @@ class IterableDropdown<T> extends StatefulWidget {
     this.margin,
     this.customItems = const CustomItems(),
     this.selectedItemConfig = const SelectedItemConfig(),
-  });
+  }) : _items = items,
+       itemsFuture = null,
+       loader = null,
+       loaderColor = null,
+       loaderSize = 24,
+       loaderStrokeWidth = 2.0;
+
+  /// Construct an IterableDropdown that fetches its items from a future.
+  ///
+  /// The provided [future] is executed only once per controller lifecycle unless
+  /// [IterableDropdownController.refresh] is invoked.
+  const IterableDropdown.future({
+    super.key,
+    this.controller,
+    required Future<Iterable<IterableDropdownItem<T>>> Function() future,
+    required this.itemBuilder,
+    this.selectionMode = SelectionMode.single,
+    this.maxHeight = 350,
+    this.itemHeight = 60,
+    this.fieldConfig = const FieldConfig(),
+    this.enableSearch = true,
+    this.searchFieldConfig = const SearchFieldConfig(),
+    this.decoration,
+    this.margin,
+    this.customItems = const CustomItems(),
+    this.selectedItemConfig = const SelectedItemConfig(),
+    this.loader,
+    this.loaderColor,
+    this.loaderSize = 24,
+    this.loaderStrokeWidth = 2.0,
+  }) : _items = null,
+       itemsFuture = future;
 
   /// Selection mode for your dropdown.
   ///
@@ -102,7 +133,10 @@ class IterableDropdown<T> extends StatefulWidget {
   ///
   /// [IterableDropdownItem.key] must be unique if you want the dropdown to work properly.
   /// Options with same key will behave abnormally (eg: both items getting selected when user only selects one)
-  final Iterable<IterableDropdownItem<T>> items;
+  final Iterable<IterableDropdownItem<T>>? _items;
+
+  /// A future that resolves to dropdown items. Used by [IterableDropdown.future].
+  final Future<Iterable<IterableDropdownItem<T>>> Function()? itemsFuture;
 
   /// The item builder for your dropdown list
   final IterableDropdownItemBuilder<T> itemBuilder;
@@ -127,7 +161,7 @@ class IterableDropdown<T> extends StatefulWidget {
 
   /// Whether to enable the search field
   ///
-  /// Will filter the items based on each dropdown key
+  /// Will filter the items based on each dropdown key.
   /// Make sure to pass the key as the String you want to search against
   ///
   /// Each dropdown needs to have a unique key for uniqueness and search
@@ -139,6 +173,7 @@ class IterableDropdown<T> extends StatefulWidget {
   /// This contains all the search field configuration such as [SearchFieldConfig.inputDecorationTheme] and [SearchFieldConfig.hint]
   final SearchFieldConfig searchFieldConfig;
 
+  /// Configuration and customisation options for selected items
   final SelectedItemConfig selectedItemConfig;
 
   /// Custom decoration for the dropdown
@@ -147,11 +182,40 @@ class IterableDropdown<T> extends StatefulWidget {
   /// Margin for the dropdown
   final EdgeInsetsGeometry? margin;
 
-  /// Custom first and last options in the dropdown
+  /// Custom first and last options in the dropdown.
+  ///
   /// These options cannot be filtered or selected
   ///
   /// Consider them pinned rows that can be used as headers or actions
   final CustomItems customItems;
+
+  /// Loader shown when fetching dropdown items through a future.
+  ///
+  /// If null, then a [CircularProgressIndicator] will be shown
+  ///
+  /// Make sure the widget doesn't exceed the [loaderSize]
+  final Widget? loader;
+
+  /// Color applied to the default loader.
+  ///
+  /// Used when [loader] is not provided
+  ///
+  /// Defaults to primary color of the theme
+  final Color? loaderColor;
+
+  /// Loader size
+  ///
+  /// Used when [loader] is not provided
+  ///
+  /// Defaults to 24.0
+  final double loaderSize;
+
+  /// Stroke width for the CircularProgressIndicator
+  ///
+  /// Used when [loader] is not provided
+  ///
+  /// Defaults to 2.0
+  final double loaderStrokeWidth;
 
   @override
   State<IterableDropdown<T>> createState() => _IterableDropdownState();
@@ -170,8 +234,14 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
     _controller = widget.controller ?? IterableDropdownController();
 
     if (!_controller.initialised) {
-      _controller.initialise(widget.items, widget.selectionMode);
+      _controller.initialise(
+        widget.selectionMode,
+        items: widget._items,
+        future: widget.itemsFuture,
+        resetSelection: false,
+      );
     }
+
     _searchTextController =
         widget.searchFieldConfig.controller ?? TextEditingController();
     _searchFocusNode = widget.searchFieldConfig.focusNode ?? FocusNode();
@@ -205,6 +275,10 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
   final LayerLink _layerLink = LayerLink();
 
   void _toggleOverlay() {
+    if (_controller.isLoading || !_controller.initialised) {
+      return;
+    }
+
     if (_overlayEntry == null) {
       _openOverlay();
     } else {
@@ -213,6 +287,10 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
   }
 
   void _openOverlay() {
+    if (_controller.isLoading || !_controller.initialised) {
+      return;
+    }
+
     if (_overlayEntry != null) return;
 
     _showOverlay();
@@ -409,6 +487,26 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
     Overlay.of(context).insert(_overlayEntry!);
   }
 
+  Widget _buildLoader(BuildContext context) {
+    if (widget.loader != null) {
+      return SizedBox(
+        height: widget.loaderSize,
+        width: widget.loaderSize,
+        child: widget.loader,
+      );
+    }
+
+    final color = widget.loaderColor ?? Theme.of(context).colorScheme.primary;
+    return SizedBox(
+      height: widget.loaderSize,
+      width: widget.loaderSize,
+      child: CircularProgressIndicator(
+        strokeWidth: widget.loaderStrokeWidth,
+        valueColor: AlwaysStoppedAnimation<Color?>(color),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return TapRegion(
@@ -537,6 +635,8 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
             }
           }
 
+          final showLoader = _controller.isLoading;
+
           Decoration dropdownDecoration = BoxDecoration(
             border: Border.all(color: Colors.grey),
             borderRadius: BorderRadius.circular(8),
@@ -560,7 +660,12 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                 child: Row(
                   children: [
                     Expanded(child: child),
-                    if (fieldConfig.showClearAllIcon)
+                    if (showLoader)
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: _buildLoader(context),
+                      )
+                    else if (fieldConfig.showClearAllIcon)
                       IconButton(
                         onPressed: _controller.clearSelections,
                         tooltip: 'Clear All',
