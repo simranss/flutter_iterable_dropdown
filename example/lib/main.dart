@@ -71,14 +71,13 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-
         title: Text(widget.title),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 100),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 32),
         // padding: const EdgeInsets.all(0),
         child: Column(
-          spacing: 30,
+          spacing: 50,
           children: [
             Column(
               spacing: 4,
@@ -99,7 +98,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-            const Divider(indent: 5, endIndent: 5),
             Column(
               spacing: 4,
               children: [
@@ -116,7 +114,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-            const Divider(indent: 5, endIndent: 5),
             Column(
               spacing: 4,
               children: [
@@ -131,7 +128,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-            const Divider(indent: 5, endIndent: 5),
             Column(
               spacing: 4,
               children: [
@@ -168,7 +164,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-            const Divider(indent: 5, endIndent: 5),
             Column(
               spacing: 4,
               children: [
