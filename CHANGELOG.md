@@ -1,3 +1,14 @@
+# 2.0.6
+**06-12-2025**
+
+* `IterableDropdown.future()` added
+* `IterableDropdownController` now has a `refresh()`
+* Earlier, when you set custom items using `IterableDropdownController`, it reset the selection as well, now user can choose if they want to reset the selection or not
+* The controller can now be instantiated with pre-selected values
+* Dropdown now won't open unless it is initialised and is not in a loading state
+* Updated Example
+* Updated Screenshot
+
 # 2.0.5
 **05-12-2025**
 
