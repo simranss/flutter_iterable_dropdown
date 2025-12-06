@@ -17,9 +17,10 @@ This dropdown stays performant because it consumes any `Iterable` instead of for
 Use this package in your Flutter app to:
  * select multiple items in dropdowns
  * use iterables in a dropdown
- * Have a more beautiful dropdown
  * Keep huge data sources responsive by only building the visible options through `ListView.builder`
  * Provide custom first/last options via `CustomItems` that can act as headers or buttons
+ * Has a future constructor for building from APIs
+ * Package size <= 30KB
 
 ## Platform Support
 
