@@ -59,13 +59,9 @@ Widget build(BuildContext context) {
       return ListTile(
         key: ValueKey(item.key),
         title: Text(item.label),
-        onTap: toggleSelection,
-        trailing: selected
-            ? Icon(Icons.check_circle_outline_rounded)
-            : Icon(Icons.circle_outlined),
+        trailing: selected ? const Icon(Icons.check_circle_outline) : null,
         selected: selected,
-        selectedColor: Colors.black,
-        selectedTileColor: Colors.deepPurple.shade100,
+        onTap: toggleSelection,
       );
     },
     selectionMode: SelectionMode.multi,
@@ -76,9 +72,38 @@ Widget build(BuildContext context) {
 You can also open or close the dropdown programmatically by interacting with the controller.
 
 ```dart
-_dropdownController.openDropdown() // show overlay
-_dropdownController.closeDropdown() // hide overlay
+_dropdownController.open() // show overlay
+_dropdownController.close() // hide overlay
 ```
+
+### Fetch items from a Future
+
+When your data comes from an async source, use the `.future` constructor. The future runs only once per controller lifecycle unless you explicitly refresh it.
+
+```dart
+@override
+Widget build(BuildContext context) {
+  return IterableDropdown<String>.future(
+    controller: _dropdownController,
+    future: _loadCities, // returns Future<Iterable<IterableDropdownItem<String>>>
+    loaderColor: Colors.indigo,
+    itemBuilder: (_, __, item, selected, toggleSelection) => ListTile(
+      key: ValueKey(item.key),
+      title: Text(item.label),
+      trailing: selected ? const Icon(Icons.check_circle_outline) : null,
+      selected: selected,
+      onTap: toggleSelection,
+    ),
+  );
+}
+
+Future<Iterable<IterableDropdownItem<String>>> _loadCities() async {
+  final cities = await cityRepository.fetchCities();
+  return cities.map((city) => IterableDropdownItem(key: city.id, label: city.name, value: city));
+}
+```
+
+You can also refresh the dropdown using the `_dropdownController.refresh()` method.
 
 ## Custom Items (Pinned Rows)
 
@@ -91,8 +116,10 @@ Widget build(BuildContext context) {
     controller: _customerController,
     items: customers,
     itemBuilder: (context, index, item, selected, toggleSelection) => ListTile(
+      key: ValueKey(item.key),
       title: Text(item.label),
       trailing: selected ? const Icon(Icons.check_circle_outline) : null,
+      selected: selected,
       onTap: toggleSelection,
     ),
     customItems: CustomItems(
@@ -118,10 +145,6 @@ Those boundary widgets stay visible regardless of what the user types into the s
 ### Grouping options
 Options can be grouped by a certain field or a combination of fields. The same label can appear twice if they are in separate groups.
 This will present hierarchy to the options.
-
-### Network Builder
-Options will be fetched using a future, most probably through an API. The `Future` will be called only once.
-The dropdown will be in a state of loading until the options are fetched.
 
 ## Additional information
 
