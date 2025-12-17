@@ -32,6 +32,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
   SelectionMode _selectionMode;
   VoidCallback? _openDropdownCallback;
   VoidCallback? _closeDropdownCallback;
+  VoidCallback? _toggleDropdownCallback;
 
   /// A getter for the dropdown options
   Iterable<IterableDropdownItem<T>> get items => _items.where((ele) => true);
@@ -277,15 +278,24 @@ class IterableDropdownController<T> extends ChangeNotifier {
   /// Closes the dropdown overlay if it is currently visible
   void close() => _closeDropdownCallback?.call();
 
+  /// Toggles the dropdown overlay
+  ///
+  /// if it is currently visible, then closes it
+  ///
+  /// if it is currently hidden, then opens it
+  void toggle() => _toggleDropdownCallback?.call();
+
   /// Attach dropdown visibility handlers
   ///
   /// For internal use by [IterableDropdown]
   void attachDropdownVisibilityHandlers({
     required VoidCallback openDropdown,
     required VoidCallback closeDropdown,
+    required VoidCallback toggleDropdown,
   }) {
     _openDropdownCallback = openDropdown;
     _closeDropdownCallback = closeDropdown;
+    _toggleDropdownCallback = toggleDropdown;
   }
 
   /// Detaches dropdown visibility handlers
@@ -294,6 +304,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
   void detachDropdownVisibilityHandlers() {
     _openDropdownCallback = null;
     _closeDropdownCallback = null;
+    _toggleDropdownCallback = null;
   }
 
   Future<void> _fetchItems(
@@ -347,5 +358,6 @@ class IterableDropdownController<T> extends ChangeNotifier {
       _items = [],
       _selectionMode = SelectionMode.single,
       _openDropdownCallback = null,
-      _closeDropdownCallback = null;
+      _closeDropdownCallback = null,
+      _toggleDropdownCallback = null;
 }

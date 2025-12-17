@@ -264,6 +264,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
     _controller.attachDropdownVisibilityHandlers(
       openDropdown: _openOverlay,
       closeDropdown: _closeOverlay,
+      toggleDropdown: _toggleOverlay,
     );
 
     super.initState();
