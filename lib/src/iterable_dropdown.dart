@@ -557,8 +557,9 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
           }
         }
       },
-      child: Builder(
-        builder: (context) {
+      child: ListenableBuilder(
+        listenable: _controller,
+        builder: (context, _) {
           final tempBuilder = widget.builder;
 
           if (tempBuilder != null) {
@@ -569,153 +570,139 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
             );
           }
 
-          return ListenableBuilder(
-            listenable: _controller,
-            builder: (context, _) {
-              final Widget child;
+          final Widget child;
 
-              final fieldConfig = widget.fieldConfig;
-              final selectedItemConfig = widget.selectedItemConfig;
+          final fieldConfig = widget.fieldConfig;
+          final selectedItemConfig = widget.selectedItemConfig;
 
-              if (_controller.selectedDropdownItems.isEmpty) {
-                child = fieldConfig.hint;
-              } else {
-                final selectedItemBuilder =
-                    selectedItemConfig.selectedItemBuilder;
-                final chipConfig = selectedItemConfig.chipConfig;
+          if (_controller.selectedDropdownItems.isEmpty) {
+            child = fieldConfig.hint;
+          } else {
+            final selectedItemBuilder = selectedItemConfig.selectedItemBuilder;
+            final chipConfig = selectedItemConfig.chipConfig;
 
-                assert(
-                  (selectedItemConfig.selectedItemBuilderType ==
-                              ItemBuilderType.custom &&
-                          selectedItemBuilder != null) ||
-                      selectedItemConfig.selectedItemBuilderType ==
-                          ItemBuilderType.chip,
-                );
+            assert(
+              (selectedItemConfig.selectedItemBuilderType ==
+                          ItemBuilderType.custom &&
+                      selectedItemBuilder != null) ||
+                  selectedItemConfig.selectedItemBuilderType ==
+                      ItemBuilderType.chip,
+            );
 
-                if (widget.selectionMode == SelectionMode.multi) {
-                  // Create a list of Chip widgets from the selected items
-                  final chips = _controller.selectedDropdownItems.mapIndexed((
-                    index,
-                    item,
-                  ) {
-                    void deleteFunc() => _controller.removeSelection(item.key);
-                    if (selectedItemBuilder != null &&
-                        selectedItemConfig.selectedItemBuilderType ==
-                            ItemBuilderType.custom) {
-                      return selectedItemBuilder(
-                        context,
-                        index,
-                        item,
-                        deleteFunc,
-                      );
-                    }
-
-                    return Chip(
-                      deleteButtonTooltipMessage: '',
-                      label: Text(item.label, style: chipConfig.labelStyle),
-                      onDeleted: chipConfig.showDeleteIcon ? deleteFunc : null,
-                      backgroundColor: chipConfig.backgroundColor,
-                      deleteIcon: chipConfig.showDeleteIcon
-                          ? chipConfig.deleteIcon
-                          : null,
-                      deleteIconColor: chipConfig.showDeleteIcon
-                          ? chipConfig.deleteIconColor
-                          : null,
-                    );
-                  });
-
-                  child = switch (selectedItemConfig.wrapStyle) {
-                    WrapStyle.wrap => Wrap(
-                      spacing: selectedItemConfig.spacing,
-                      runSpacing: selectedItemConfig.runSpacing,
-                      children: [...chips],
-                    ),
-                    WrapStyle.list => SizedBox(
-                      height: 45,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          ...chips.expandIndexed((i, ele) {
-                            if (i == chips.length - 1) return [ele];
-
-                            return [
-                              ele,
-                              SizedBox(width: selectedItemConfig.spacing),
-                            ];
-                          }),
-                        ],
-                      ),
-                    ),
-                  };
-                } else {
-                  final item = _controller.selectedDropdownItems.firstOrNull;
-                  if (item == null) {
-                    child = fieldConfig.hint;
-                  } else {
-                    final index = 0;
-                    void deleteFunc() => _controller.removeSelection(item.key);
-                    child =
-                        selectedItemBuilder?.call(
-                          context,
-                          index,
-                          item,
-                          deleteFunc,
-                        ) ??
-                        Text(
-                          _controller
-                                  .selectedDropdownItems
-                                  .firstOrNull
-                                  ?.label ??
-                              '',
-                        );
-                  }
+            if (widget.selectionMode == SelectionMode.multi) {
+              // Create a list of Chip widgets from the selected items
+              final chips = _controller.selectedDropdownItems.mapIndexed((
+                index,
+                item,
+              ) {
+                void deleteFunc() => _controller.removeSelection(item.key);
+                if (selectedItemBuilder != null &&
+                    selectedItemConfig.selectedItemBuilderType ==
+                        ItemBuilderType.custom) {
+                  return selectedItemBuilder(context, index, item, deleteFunc);
                 }
-              }
 
-              final showLoader = _controller.isLoading;
+                return Chip(
+                  deleteButtonTooltipMessage: '',
+                  label: Text(item.label, style: chipConfig.labelStyle),
+                  onDeleted: chipConfig.showDeleteIcon ? deleteFunc : null,
+                  backgroundColor: chipConfig.backgroundColor,
+                  deleteIcon: chipConfig.showDeleteIcon
+                      ? chipConfig.deleteIcon
+                      : null,
+                  deleteIconColor: chipConfig.showDeleteIcon
+                      ? chipConfig.deleteIconColor
+                      : null,
+                );
+              });
 
-              Decoration dropdownDecoration = BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(8),
-              );
-              if (widget.decoration != null) {
-                dropdownDecoration = widget.decoration!;
-              }
+              child = switch (selectedItemConfig.wrapStyle) {
+                WrapStyle.wrap => Wrap(
+                  spacing: selectedItemConfig.spacing,
+                  runSpacing: selectedItemConfig.runSpacing,
+                  children: [...chips],
+                ),
+                WrapStyle.list => SizedBox(
+                  height: 45,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      ...chips.expandIndexed((i, ele) {
+                        if (i == chips.length - 1) return [ele];
 
-              return CompositedTransformTarget(
-                key: _dropdownKey,
-                link: _layerLink,
-                child: GestureDetector(
-                  onTap: () {
-                    // toggle the overlay
-                    _toggleOverlay();
-                  },
-                  child: Container(
-                    decoration: dropdownDecoration,
-                    padding: fieldConfig.padding,
-                    margin: widget.margin,
-                    child: Row(
-                      children: [
-                        Expanded(child: child),
-                        if (showLoader)
-                          Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: _buildLoader(context),
-                          )
-                        else if (fieldConfig.showClearAllIcon)
-                          IconButton(
-                            onPressed: _controller.clearSelections,
-                            tooltip: 'Clear All',
-                            icon: fieldConfig.clearAllIcon,
-                            iconSize: fieldConfig.clearAllIconSize,
-                            color: fieldConfig.clearAllIconColor,
-                          ),
-                      ],
-                    ),
+                        return [
+                          ele,
+                          SizedBox(width: selectedItemConfig.spacing),
+                        ];
+                      }),
+                    ],
                   ),
                 ),
-              );
-            },
+              };
+            } else {
+              final item = _controller.selectedDropdownItems.firstOrNull;
+              if (item == null) {
+                child = fieldConfig.hint;
+              } else {
+                final index = 0;
+                void deleteFunc() => _controller.removeSelection(item.key);
+                child =
+                    selectedItemBuilder?.call(
+                      context,
+                      index,
+                      item,
+                      deleteFunc,
+                    ) ??
+                    Text(
+                      _controller.selectedDropdownItems.firstOrNull?.label ??
+                          '',
+                    );
+              }
+            }
+          }
+
+          final showLoader = _controller.isLoading;
+
+          Decoration dropdownDecoration = BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(8),
+          );
+          if (widget.decoration != null) {
+            dropdownDecoration = widget.decoration!;
+          }
+
+          return CompositedTransformTarget(
+            key: _dropdownKey,
+            link: _layerLink,
+            child: GestureDetector(
+              onTap: () {
+                // toggle the overlay
+                _toggleOverlay();
+              },
+              child: Container(
+                decoration: dropdownDecoration,
+                padding: fieldConfig.padding,
+                margin: widget.margin,
+                child: Row(
+                  children: [
+                    Expanded(child: child),
+                    if (showLoader)
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: _buildLoader(context),
+                      )
+                    else if (fieldConfig.showClearAllIcon)
+                      IconButton(
+                        onPressed: _controller.clearSelections,
+                        tooltip: 'Clear All',
+                        icon: fieldConfig.clearAllIcon,
+                        iconSize: fieldConfig.clearAllIconSize,
+                        color: fieldConfig.clearAllIconColor,
+                      ),
+                  ],
+                ),
+              ),
+            ),
           );
         },
       ),
