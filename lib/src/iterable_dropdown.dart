@@ -562,7 +562,11 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
           final tempBuilder = widget.builder;
 
           if (tempBuilder != null) {
-            return tempBuilder(context, _controller, widget.child);
+            return CompositedTransformTarget(
+              key: _dropdownKey,
+              link: _layerLink,
+              child: tempBuilder(context, _controller, widget.child),
+            );
           }
 
           return ListenableBuilder(
