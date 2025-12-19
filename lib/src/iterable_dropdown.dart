@@ -300,6 +300,8 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
     if (_overlayEntry == null) return;
 
     _hideOverlay();
+
+    _controller.onFilter('');
   }
 
   void _hideOverlay() {
