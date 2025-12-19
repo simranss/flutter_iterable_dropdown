@@ -316,6 +316,8 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
     if (_overlayEntry == null) return;
 
     _hideOverlay();
+
+    _controller.onFilter('');
   }
 
   void _hideOverlay() {
@@ -446,8 +448,11 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                     child: ListenableBuilder(
                       listenable: _controller,
                       builder: (context, _) {
+                        final filteredItemsCount =
+                            _controller.filteredItems.length;
+
                         final itemCount =
-                            _controller.filteredItems.length +
+                            (filteredItemsCount <= 0 ? 1 : filteredItemsCount) +
                             (widget.customItems.start != null ? 1 : 0) +
                             (widget.customItems.end != null ? 1 : 0);
 
@@ -464,6 +469,21 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                             if (index == itemCount - 1 &&
                                 widget.customItems.end != null) {
                               return widget.customItems.end!;
+                            }
+
+                            if (filteredItemsCount <= 0) {
+                              return Container(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'No items found',
+                                  style: TextStyle(
+                                    fontSize:
+                                        searchDecoration.hintStyle?.fontSize ??
+                                        14,
+                                    color: searchDecoration.iconColor,
+                                  ),
+                                ),
+                              );
                             }
 
                             final tempIndex =
