@@ -80,6 +80,8 @@ class IterableDropdown<T> extends StatefulWidget {
     this.margin,
     this.customItems = const CustomItems(),
     this.selectedItemConfig = const SelectedItemConfig(),
+    this.builder,
+    this.child,
   }) : _items = items,
        itemsFuture = null,
        loader = null,
@@ -110,6 +112,8 @@ class IterableDropdown<T> extends StatefulWidget {
     this.loaderColor,
     this.loaderSize = 24,
     this.loaderStrokeWidth = 2.0,
+    this.builder,
+    this.child,
   }) : _items = null,
        itemsFuture = future;
 
@@ -217,6 +221,17 @@ class IterableDropdown<T> extends StatefulWidget {
   /// Defaults to 2.0
   final double loaderStrokeWidth;
 
+  /// Child for builder
+  /// Providing this alone is not enough
+  /// This Widget passes on to the [builder] property
+  final Widget? child;
+
+  /// The dropdown builder
+  /// If null, then it will take the default UI for the dropdown
+  /// The last argument is the [child] property of the dropdown
+  final Widget Function(BuildContext, IterableDropdownController, Widget?)?
+  builder;
+
   @override
   State<IterableDropdown<T>> createState() => _IterableDropdownState();
 }
@@ -249,6 +264,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
     _controller.attachDropdownVisibilityHandlers(
       openDropdown: _openOverlay,
       closeDropdown: _closeOverlay,
+      toggleDropdown: _toggleOverlay,
     );
 
     super.initState();
@@ -564,6 +580,16 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
       child: ListenableBuilder(
         listenable: _controller,
         builder: (context, _) {
+          final tempBuilder = widget.builder;
+
+          if (tempBuilder != null) {
+            return CompositedTransformTarget(
+              key: _dropdownKey,
+              link: _layerLink,
+              child: tempBuilder(context, _controller, widget.child),
+            );
+          }
+
           final Widget child;
 
           final fieldConfig = widget.fieldConfig;
