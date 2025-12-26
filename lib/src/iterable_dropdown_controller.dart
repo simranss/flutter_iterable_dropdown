@@ -1,8 +1,4 @@
-import 'dart:collection' show UnmodifiableListView;
-
-import 'package:flutter/material.dart';
-import 'package:iterable_dropdown/src/iterable_dropdown_item.dart'
-    show IterableDropdownItem;
+part of 'iterable_dropdown.dart';
 
 /// Selection Mode for the [IterableDropdown] widget.
 ///
@@ -25,7 +21,6 @@ class IterableDropdownController<T> extends ChangeNotifier {
 
   /// Whether the dropdown items are currently being fetched
   bool get isLoading => _isLoading;
-
   List<String> _selectedKeys;
   Iterable<IterableDropdownItem<T>> _items;
   Iterable<IterableDropdownItem<T>> _filteredItems;
@@ -273,22 +268,22 @@ class IterableDropdownController<T> extends ChangeNotifier {
   }
 
   /// Opens the dropdown overlay if it is currently hidden
-  void open() => _openDropdownCallback?.call();
+  void openDropdown() => _openDropdownCallback?.call();
 
   /// Closes the dropdown overlay if it is currently visible
-  void close() => _closeDropdownCallback?.call();
+  void closeDropdown() => _closeDropdownCallback?.call();
 
   /// Toggles the dropdown overlay
   ///
   /// if it is currently visible, then closes it
   ///
   /// if it is currently hidden, then opens it
-  void toggle() => _toggleDropdownCallback?.call();
+  void toggleDropdown() => _toggleDropdownCallback?.call();
 
   /// Attach dropdown visibility handlers
   ///
   /// For internal use by [IterableDropdown]
-  void attachDropdownVisibilityHandlers({
+  void _attachDropdownVisibilityHandlers({
     required VoidCallback openDropdown,
     required VoidCallback closeDropdown,
     required VoidCallback toggleDropdown,
@@ -301,7 +296,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
   /// Detaches dropdown visibility handlers
   ///
   /// For internal use by [IterableDropdown]
-  void detachDropdownVisibilityHandlers() {
+  void _detachDropdownVisibilityHandlers() {
     _openDropdownCallback = null;
     _closeDropdownCallback = null;
     _toggleDropdownCallback = null;

@@ -1,3 +1,4 @@
+import 'dart:collection' show UnmodifiableListView;
 import 'dart:math' show min;
 
 import 'package:collection/collection.dart' show IterableExtension;
@@ -6,8 +7,11 @@ import 'package:iterable_dropdown/src/data_models/custom_items.dart';
 import 'package:iterable_dropdown/src/data_models/field_config.dart';
 import 'package:iterable_dropdown/src/data_models/search_field_config.dart';
 import 'package:iterable_dropdown/src/data_models/selected_item_config.dart';
-import 'package:iterable_dropdown/src/iterable_dropdown_controller.dart';
+import 'package:iterable_dropdown/src/iterable_dropdown_item.dart'
+    show IterableDropdownItem;
 import 'package:iterable_dropdown/src/iterable_dropdown_item.dart';
+
+part 'iterable_dropdown_controller.dart';
 
 /// A custom widget builder for selected options.
 /// Provides with [context], [index], [item], [selected], [toggleSelection]
@@ -261,7 +265,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
         widget.searchFieldConfig.controller ?? TextEditingController();
     _searchFocusNode = widget.searchFieldConfig.focusNode ?? FocusNode();
 
-    _controller.attachDropdownVisibilityHandlers(
+    _controller._attachDropdownVisibilityHandlers(
       openDropdown: _openOverlay,
       closeDropdown: _closeOverlay,
       toggleDropdown: _toggleOverlay,
@@ -272,8 +276,8 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
 
   @override
   void dispose() {
-    _closeOverlay();
-    _controller.detachDropdownVisibilityHandlers();
+    _controller.closeDropdown();
+    _controller._detachDropdownVisibilityHandlers();
 
     if (widget.controller == null) {
       _controller.dispose();
@@ -568,12 +572,12 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
             if (!dropdownBounds.contains(clickPosition)) {
               _searchTextController.clear();
               _searchFocusNode.unfocus();
-              _closeOverlay();
+              _controller.closeDropdown();
             }
           } else {
             _searchTextController.clear();
             _searchFocusNode.unfocus();
-            _closeOverlay();
+            _controller.closeDropdown();
           }
         }
       },
@@ -697,7 +701,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
             child: GestureDetector(
               onTap: () {
                 // toggle the overlay
-                _toggleOverlay();
+                _controller.toggleDropdown();
               },
               child: Container(
                 decoration: dropdownDecoration,

@@ -184,11 +184,11 @@ class _MyHomePageState extends State<MyHomePage> {
         spacing: 10,
         children: [
           FloatingActionButton(
-            onPressed: () => _dropdownController5.open(),
+            onPressed: () => _dropdownController5.openDropdown(),
             child: Icon(Icons.open_in_full_rounded),
           ),
           FloatingActionButton(
-            onPressed: () => _dropdownController5.close(),
+            onPressed: () => _dropdownController5.closeDropdown(),
             child: Icon(Icons.close_fullscreen_rounded),
           ),
           FloatingActionButton(
