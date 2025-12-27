@@ -147,6 +147,17 @@ class IterableDropdown<T> extends StatefulWidget {
   final Future<Iterable<IterableDropdownItem<T>>> Function()? itemsFuture;
 
   /// The item builder for your dropdown list
+  ///
+  /// Provides with [context], [index], [item], [selected], [toggleSelection]
+  ///
+  /// [index] --> index of the option in the dropdown
+  ///
+  /// [item] --> option.
+  /// It gives the item data in [IterableDropdownItem] format
+  ///
+  /// [selected] --> whether the option is selected or not
+  ///
+  /// [toggleSelection] --> function to select / unselect the option
   final IterableDropdownItemBuilder<T> itemBuilder;
 
   /// Each dropdown item height

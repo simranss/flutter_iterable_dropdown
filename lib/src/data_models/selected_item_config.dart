@@ -35,6 +35,15 @@ class SelectedItemConfig {
 
   /// An item builder for the selected items.
   /// The maximum height cannot exceed 45.0 for [WrapStyle.list] when the selection mode is [SelectionMode.multi].
+  ///
+  /// Provides with [context], [index], [item], [delete]
+  ///
+  /// [index] --> index of the option in list of the selected options
+  ///
+  /// [item] --> selected option.
+  /// It gives the item data in [IterableDropdownItem] format
+  ///
+  /// [delete] --> function to delete the selected option
   final IterableDropdownSelectedItemBuilder? selectedItemBuilder;
 
   /// Spacing between the selected items
