@@ -73,8 +73,12 @@ Widget build(BuildContext context) {
 You can also open or close the dropdown programmatically by interacting with the controller.
 
 ```dart
-_dropdownController.open() // show overlay
-_dropdownController.close() // hide overlay
+_dropdownController.openDropdown() // show dropdown overlay
+_dropdownController.closeDropdown() // hide dropdown overlay
+
+// getters to check if dropdown is open or close
+_dropdownController.isOpen
+_dropdownController.isClose
 ```
 
 ### Fetch items from a Future
@@ -106,7 +110,7 @@ Future<Iterable<IterableDropdownItem<String>>> _loadCities() async {
 
 You can also refresh the dropdown using the `_dropdownController.refresh()` method.
 
-## Custom Items (Pinned Rows)
+### Custom Items (Pinned Rows)
 
 Use the `customItems` parameter when you need pinned widgets before or after the generated options. These widgets never get filtered or selected, which makes them perfect for headers, dividers, or persistent actions. For instance, a customer selector can expose an `Add new customer` row at the top that launches a creation flow.
 
@@ -140,12 +144,54 @@ Widget build(BuildContext context) {
 
 Those boundary widgets stay visible regardless of what the user types into the search box and cannot be selected, so they are ideal for headers or CTA rows.
 
+### Custom Trigger (MenuAnchor-style)
+
+When you want full control over the dropdown button, provide a `builder` and an optional `child`.
+The `builder` receives the controller and the `child` widget so you can recreate a MenuAnchor-like
+experience while keeping the overlay and selection logic intact.
+
+```dart
+@override
+Widget build(BuildContext context) {
+  return IterableDropdown<String>.builder(
+    controller: _dropdownController,
+    items: items,
+    itemBuilder: (_, _, item, selected, toggleSelection) => ListTile(
+      key: ValueKey(item.key),
+      title: Text(item.label),
+      trailing: selected ? const Icon(Icons.check_circle_outline) : null,
+      selected: selected,
+      onTap: toggleSelection,
+    ),
+    builder: (context, controller, child) {
+      return FilledButton(
+        onPressed: controller.toggleDropdown,
+        child: child ?? const Text('Choose items'),
+      );
+    },
+    child: Row(
+      spacing: 8,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Icon(Icons.list_alt),
+        Text(_dropdownController.selectedItems.isEmpty
+            ? 'Choose items'
+            : '${_dropdownController.selectedItems.length} selected'),
+      ],
+    ),
+  );
+}
+```
+
 
 ## Upcoming Features
 
 ### Grouping options
 Options can be grouped by a certain field or a combination of fields. The same label can appear twice if they are in separate groups.
 This will present hierarchy to the options.
+
+### onChanged Callback
+As of now the package doesn't have an `onChanged` callback which I will be adding soon.
 
 ## Additional information
 
