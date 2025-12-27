@@ -1,8 +1,16 @@
+# 2.0.7
+**27-12-2025**
+
+* Custom Dropdown button builder. There are two new fields for this `IterableDropdown.builder` and `IterableDropdown.child`. The format is kept similar to `MenuAnchor` for easy understanding and usability. (#)
+* `IterableDropdownController` now has a `toggleDropdown()`, and two new getters `isOpen` and `isClose`.
+* Bug Fix: every time you search and close the dropdown, opening it again still showed the previous search results
+* Show a text of "No items found" when no options to select.
+
 # 2.0.6
 **06-12-2025**
 
 * `IterableDropdown.future()` added
-* `IterableDropdownController` now has a `refresh()`
+* `IterableDropdownController` now has a `refresh()` for updating items through future.
 * Earlier, when you set custom items using `IterableDropdownController`, it reset the selection as well, now user can choose if they want to reset the selection or not
 * The controller can now be instantiated with pre-selected values
 * Dropdown now won't open unless it is initialised and is not in a loading state
