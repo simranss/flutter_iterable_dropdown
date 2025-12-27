@@ -265,11 +265,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
         widget.searchFieldConfig.controller ?? TextEditingController();
     _searchFocusNode = widget.searchFieldConfig.focusNode ?? FocusNode();
 
-    _controller._attachDropdownVisibilityHandlers(
-      openDropdown: _openOverlay,
-      closeDropdown: _closeOverlay,
-      toggleDropdown: _toggleOverlay,
-    );
+    _controller._showOverlayCallback = _showOverlay;
 
     super.initState();
   }
@@ -277,7 +273,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
   @override
   void dispose() {
     _controller.closeDropdown();
-    _controller._detachDropdownVisibilityHandlers();
+    _controller._showOverlayCallback = null;
 
     if (widget.controller == null) {
       _controller.dispose();
@@ -291,43 +287,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
     super.dispose();
   }
 
-  OverlayEntry? _overlayEntry;
   final LayerLink _layerLink = LayerLink();
-
-  void _toggleOverlay() {
-    if (_controller.isLoading || !_controller.initialised) {
-      return;
-    }
-
-    if (_overlayEntry == null) {
-      _openOverlay();
-    } else {
-      _closeOverlay();
-    }
-  }
-
-  void _openOverlay() {
-    if (_controller.isLoading || !_controller.initialised) {
-      return;
-    }
-
-    if (_overlayEntry != null) return;
-
-    _showOverlay();
-  }
-
-  void _closeOverlay() {
-    if (_overlayEntry == null) return;
-
-    _hideOverlay();
-
-    _controller.onFilter('');
-  }
-
-  void _hideOverlay() {
-    _overlayEntry?.remove();
-    _overlayEntry = null;
-  }
 
   void _showOverlay() {
     // Get the size and position of the dropdown button
@@ -419,7 +379,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
       hint: widget.searchFieldConfig.hint,
     );
 
-    _overlayEntry = OverlayEntry(
+    final overlayEntry = OverlayEntry(
       builder: (context) {
         return Positioned(
           width: size.width,
@@ -524,7 +484,8 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
       },
     );
 
-    Overlay.of(context).insert(_overlayEntry!);
+    _controller._setOverlayEntry(overlayEntry);
+    Overlay.of(context).insert(overlayEntry);
   }
 
   Widget _buildLoader(BuildContext context) {
@@ -551,7 +512,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
   Widget build(BuildContext context) {
     return TapRegion(
       onTapOutside: (e) {
-        if (_overlayEntry != null) {
+        if (_controller.isOpen) {
           // overlay is visible
 
           // hide only if the click hasn't happened on the overlay
