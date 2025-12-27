@@ -20,7 +20,7 @@ Use this package in your Flutter app to:
  * Keep huge data sources responsive by only building the visible options through `ListView.builder`
  * Provide custom first/last options via `CustomItems` that can act as headers or buttons
  * Has a future constructor for building from APIs
- * Package size <= 30KB
+ * Package size <= 40KB
 
 ## Platform Support
 
