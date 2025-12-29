@@ -1,4 +1,4 @@
-import 'dart:collection' show UnmodifiableListView;
+import 'dart:collection' show UnmodifiableSetView;
 import 'dart:math' show min;
 
 import 'package:collection/collection.dart' show IterableExtension;

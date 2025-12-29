@@ -33,7 +33,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
   /// Whether the dropdown overlay is currently hidden
   bool get isClose => _overlayEntry == null;
 
-  List<String> _selectedKeys;
+  Set<String> _selectedKeys;
   Iterable<IterableDropdownItem<T>> _items;
   Iterable<IterableDropdownItem<T>> _filteredItems;
   SelectionMode _selectionMode;
@@ -43,8 +43,8 @@ class IterableDropdownController<T> extends ChangeNotifier {
   Iterable<IterableDropdownItem<T>> get items => _items.where((ele) => true);
 
   /// A getter for all the selected keys.
-  UnmodifiableListView<String> get selectedKeys =>
-      UnmodifiableListView(_selectedKeys);
+  UnmodifiableSetView<String> get selectedKeys =>
+      UnmodifiableSetView(_selectedKeys);
 
   /// A getter for all selected options
   Iterable<IterableDropdownItem<T>> get selectedDropdownItems =>
@@ -72,7 +72,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
     _selectionMode = mode;
 
     if (mode == SelectionMode.single && _selectedKeys.length > 1) {
-      _selectedKeys = [_selectedKeys.first];
+      _selectedKeys = {_selectedKeys.first};
       _bumpSelectionVersion();
     }
 
@@ -89,7 +89,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
     _items = items;
     _filteredItems = items;
     if (resetSelection) {
-      _selectedKeys = [];
+      _selectedKeys = {};
       _bumpSelectionVersion();
     }
 
@@ -118,16 +118,16 @@ class IterableDropdownController<T> extends ChangeNotifier {
   /// [SelectionMode.multi] --> adds a new selection
   void addSelection(String key) {
     if (_selectionMode == SelectionMode.single) {
-      _selectedKeys = [];
+      _selectedKeys = {};
     }
-    _selectedKeys = {..._selectedKeys, key}.toList();
+    _selectedKeys = {..._selectedKeys, key};
     _bumpSelectionVersion();
     notifyListeners();
   }
 
   /// De-selects the option with matching key.
   void removeSelection(String key) {
-    _selectedKeys = {..._selectedKeys}.toList()..remove(key);
+    _selectedKeys = {..._selectedKeys}..remove(key);
     _bumpSelectionVersion();
     notifyListeners();
   }
@@ -135,7 +135,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
   /// Selects the option with matching key.
   /// This removes all the previous selections.
   void setSelection(String key) {
-    _selectedKeys = [key];
+    _selectedKeys = {key};
     _bumpSelectionVersion();
     notifyListeners();
   }
@@ -152,9 +152,9 @@ class IterableDropdownController<T> extends ChangeNotifier {
   void addSelections(Iterable<String> keys) {
     if (keys.isEmpty) return;
     if (_selectionMode == SelectionMode.single) {
-      _selectedKeys = [keys.first];
+      _selectedKeys = {keys.first};
     } else {
-      _selectedKeys = {..._selectedKeys, ...keys}.toList();
+      _selectedKeys = {..._selectedKeys, ...keys};
     }
     _bumpSelectionVersion();
     notifyListeners();
@@ -166,7 +166,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
   void removeSelections(Iterable<String> keys) {
     if (keys.isEmpty) return;
 
-    _selectedKeys = [..._selectedKeys]
+    _selectedKeys = {..._selectedKeys}
       ..removeWhere((selectedKey) => keys.contains(selectedKey));
 
     _bumpSelectionVersion();
@@ -185,9 +185,9 @@ class IterableDropdownController<T> extends ChangeNotifier {
     if (keys.isEmpty) return;
 
     if (_selectionMode == SelectionMode.single) {
-      _selectedKeys = [keys.first];
+      _selectedKeys = {keys.first};
     } else {
-      _selectedKeys = keys.toSet().toList();
+      _selectedKeys = keys.toSet();
     }
 
     _bumpSelectionVersion();
@@ -200,12 +200,12 @@ class IterableDropdownController<T> extends ChangeNotifier {
   /// Whereas if the key wasn't selected, it will get selected
   void toggleSelection(String key) {
     if (_selectedKeys.contains(key)) {
-      _selectedKeys = [..._selectedKeys]..remove(key);
+      _selectedKeys = {..._selectedKeys}..remove(key);
     } else {
       if (_selectionMode == SelectionMode.single) {
-        _selectedKeys = [];
+        _selectedKeys = {};
       }
-      _selectedKeys = [..._selectedKeys, key];
+      _selectedKeys = {..._selectedKeys, key};
     }
     _bumpSelectionVersion();
     notifyListeners();
@@ -213,7 +213,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
 
   /// Clear all selections
   void clearSelections() {
-    _selectedKeys = [];
+    _selectedKeys = {};
     _bumpSelectionVersion();
     notifyListeners();
   }
@@ -275,7 +275,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
       _items = items;
       _filteredItems = items;
       if (resetSelection) {
-        _selectedKeys = [];
+        _selectedKeys = {};
         _bumpSelectionVersion();
       }
       _initialised = true;
@@ -363,7 +363,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
       _items = items;
       _filteredItems = items;
       if (resetSelection) {
-        _selectedKeys = [];
+        _selectedKeys = {};
         _bumpSelectionVersion();
       }
       _isLoading = false;
@@ -393,7 +393,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
       _isLoading = false,
       _selectionVersion = 0,
       _overlayEntry = null,
-      _selectedKeys = [...?selectedKeys],
+      _selectedKeys = {...?selectedKeys},
       _filteredItems = [],
       _items = [],
       _selectionMode = SelectionMode.single,
