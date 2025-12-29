@@ -86,6 +86,7 @@ class IterableDropdown<T> extends StatefulWidget {
     this.selectedItemConfig = const SelectedItemConfig(),
     this.builder,
     this.child,
+    this.onChanged,
   }) : _items = items,
        itemsFuture = null,
        loader = null,
@@ -118,6 +119,7 @@ class IterableDropdown<T> extends StatefulWidget {
     this.loaderStrokeWidth = 2.0,
     this.builder,
     this.child,
+    this.onChanged,
   }) : _items = null,
        itemsFuture = future;
 
@@ -247,6 +249,9 @@ class IterableDropdown<T> extends StatefulWidget {
   final Widget Function(BuildContext, IterableDropdownController, Widget?)?
   builder;
 
+  /// Callback when the selection changes
+  final void Function(List<T> values)? onChanged;
+
   @override
   State<IterableDropdown<T>> createState() => _IterableDropdownState();
 }
@@ -255,6 +260,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
   late IterableDropdownController<T> _controller;
   late TextEditingController _searchTextController;
   late FocusNode _searchFocusNode;
+  late int _lastSelectionVersion;
 
   final GlobalKey _dropdownKey = GlobalKey();
   final GlobalKey _overlayKey = GlobalKey();
@@ -262,6 +268,7 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
   @override
   void initState() {
     _controller = widget.controller ?? IterableDropdownController();
+    _lastSelectionVersion = _controller.selectionVersion;
 
     if (!_controller.initialised) {
       _controller.initialise(
@@ -277,12 +284,14 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
     _searchFocusNode = widget.searchFieldConfig.focusNode ?? FocusNode();
 
     _controller._showOverlayCallback = _showOverlay;
+    _controller.addListener(_handleControllerChange);
 
     super.initState();
   }
 
   @override
   void dispose() {
+    _controller.removeListener(_handleControllerChange);
     _controller.closeDropdown();
     _controller._showOverlayCallback = null;
 
@@ -296,6 +305,14 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
       _searchFocusNode.dispose();
     }
     super.dispose();
+  }
+
+  void _handleControllerChange() {
+    final selectionVersion = _controller.selectionVersion;
+    if (selectionVersion == _lastSelectionVersion) return;
+
+    _lastSelectionVersion = selectionVersion;
+    widget.onChanged?.call(_controller.selectedItems.toList());
   }
 
   final LayerLink _layerLink = LayerLink();

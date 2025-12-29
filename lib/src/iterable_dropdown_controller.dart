@@ -14,6 +14,7 @@ enum SelectionMode { single, multi }
 class IterableDropdownController<T> extends ChangeNotifier {
   bool _initialised;
   bool _isLoading;
+  int _selectionVersion;
   OverlayEntry? _overlayEntry;
   Future<Iterable<IterableDropdownItem<T>>> Function()? _itemsFuture;
 
@@ -22,6 +23,9 @@ class IterableDropdownController<T> extends ChangeNotifier {
 
   /// Whether the dropdown items are currently being fetched
   bool get isLoading => _isLoading;
+
+  /// Incrementing token for selection changes
+  int get selectionVersion => _selectionVersion;
 
   /// Whether the dropdown overlay is currently visible
   bool get isOpen => !isClose;
@@ -69,6 +73,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
 
     if (mode == SelectionMode.single && _selectedKeys.length > 1) {
       _selectedKeys = [_selectedKeys.first];
+      _bumpSelectionVersion();
     }
 
     notifyListeners();
@@ -83,7 +88,10 @@ class IterableDropdownController<T> extends ChangeNotifier {
   }) {
     _items = items;
     _filteredItems = items;
-    if (resetSelection) _selectedKeys = [];
+    if (resetSelection) {
+      _selectedKeys = [];
+      _bumpSelectionVersion();
+    }
 
     notifyListeners();
   }
@@ -113,12 +121,14 @@ class IterableDropdownController<T> extends ChangeNotifier {
       _selectedKeys = [];
     }
     _selectedKeys = {..._selectedKeys, key}.toList();
+    _bumpSelectionVersion();
     notifyListeners();
   }
 
   /// De-selects the option with matching key.
   void removeSelection(String key) {
     _selectedKeys = {..._selectedKeys}.toList()..remove(key);
+    _bumpSelectionVersion();
     notifyListeners();
   }
 
@@ -126,6 +136,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
   /// This removes all the previous selections.
   void setSelection(String key) {
     _selectedKeys = [key];
+    _bumpSelectionVersion();
     notifyListeners();
   }
 
@@ -145,6 +156,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
     } else {
       _selectedKeys = {..._selectedKeys, ...keys}.toList();
     }
+    _bumpSelectionVersion();
     notifyListeners();
   }
 
@@ -157,6 +169,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
     _selectedKeys = [..._selectedKeys]
       ..removeWhere((selectedKey) => keys.contains(selectedKey));
 
+    _bumpSelectionVersion();
     notifyListeners();
   }
 
@@ -177,6 +190,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
       _selectedKeys = keys.toSet().toList();
     }
 
+    _bumpSelectionVersion();
     notifyListeners();
   }
 
@@ -193,12 +207,14 @@ class IterableDropdownController<T> extends ChangeNotifier {
       }
       _selectedKeys = [..._selectedKeys, key];
     }
+    _bumpSelectionVersion();
     notifyListeners();
   }
 
   /// Clear all selections
   void clearSelections() {
     _selectedKeys = [];
+    _bumpSelectionVersion();
     notifyListeners();
   }
 
@@ -258,7 +274,10 @@ class IterableDropdownController<T> extends ChangeNotifier {
     if (items != null) {
       _items = items;
       _filteredItems = items;
-      if (resetSelection) _selectedKeys = [];
+      if (resetSelection) {
+        _selectedKeys = [];
+        _bumpSelectionVersion();
+      }
       _initialised = true;
       _isLoading = false;
       return;
@@ -314,6 +333,10 @@ class IterableDropdownController<T> extends ChangeNotifier {
     _overlayEntry = entry;
   }
 
+  void _bumpSelectionVersion() {
+    _selectionVersion++;
+  }
+
   void _hideOverlayEntry() {
     _overlayEntry?.remove();
     _setOverlayEntry(null);
@@ -339,7 +362,10 @@ class IterableDropdownController<T> extends ChangeNotifier {
       final items = await _itemsFuture!();
       _items = items;
       _filteredItems = items;
-      if (resetSelection) _selectedKeys = [];
+      if (resetSelection) {
+        _selectedKeys = [];
+        _bumpSelectionVersion();
+      }
       _isLoading = false;
       notifyListeners();
     } catch (e) {
@@ -365,6 +391,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
   IterableDropdownController([Iterable<String>? selectedKeys])
     : _initialised = false,
       _isLoading = false,
+      _selectionVersion = 0,
       _overlayEntry = null,
       _selectedKeys = [...?selectedKeys],
       _filteredItems = [],
