@@ -1,7 +1,13 @@
+# 2.0.8
+**02-01-2026**
+
+* Added an `onChanged` callback
+* Made `selectedKeys` a `Set<String` instead of `List<String>`
+
 # 2.0.7
 **27-12-2025**
 
-* Custom Dropdown button builder. There are two new fields for this `IterableDropdown.builder` and `IterableDropdown.child`. The format is kept similar to `MenuAnchor` for easy understanding and usability. (#)
+* Custom Dropdown button builder. There are two new fields for this `IterableDropdown.builder` and `IterableDropdown.child`. The format is kept similar to `MenuAnchor` for easy understanding and usability. [#7](https://github.com/simranss/flutter_iterable_dropdown/pull/7)
 * `IterableDropdownController` now has a `toggleDropdown()`, and two new getters `isOpen` and `isClose`.
 * Bug Fix: every time you search and close the dropdown, opening it again still showed the previous search results
 * Show a text of "No items found" when no options to select.
