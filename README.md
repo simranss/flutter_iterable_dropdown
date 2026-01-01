@@ -183,16 +183,6 @@ Widget build(BuildContext context) {
 }
 ```
 
-
-## Upcoming Features
-
-### Grouping options
-Options can be grouped by a certain field or a combination of fields. The same label can appear twice if they are in separate groups.
-This will present hierarchy to the options.
-
-### onChanged Callback
-As of now the package doesn't have an `onChanged` callback which I will be adding soon.
-
 ## Additional information
 
 You can contribute to this package via the [Github Repo](https://github.com/simranss/flutter_iterable_dropdown). Check out the [Contribution Page](CONTRIBUTING.md) for reference.
