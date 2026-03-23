@@ -573,19 +573,24 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
       child: ListenableBuilder(
         listenable: _controller,
         builder: (context, _) {
+          final fieldConfig = widget.fieldConfig;
+
           final tempBuilder = widget.builder;
 
           if (tempBuilder != null) {
             return CompositedTransformTarget(
               key: _dropdownKey,
               link: _layerLink,
-              child: tempBuilder(context, _controller, widget.child),
+              child: Container(
+                padding: fieldConfig.padding,
+                margin: widget.margin,
+                child: tempBuilder(context, _controller, widget.child),
+              ),
             );
           }
 
           final Widget child;
 
-          final fieldConfig = widget.fieldConfig;
           final selectedItemConfig = widget.selectedItemConfig;
 
           if (_controller.selectedDropdownItems.isEmpty) {
