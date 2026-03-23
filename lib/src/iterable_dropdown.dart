@@ -4,6 +4,7 @@ import 'dart:math' show min;
 import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
 import 'package:iterable_dropdown/src/data_models/custom_items.dart';
+import 'package:iterable_dropdown/src/data_models/dropdown_config.dart';
 import 'package:iterable_dropdown/src/data_models/field_config.dart';
 import 'package:iterable_dropdown/src/data_models/search_field_config.dart';
 import 'package:iterable_dropdown/src/data_models/selected_item_config.dart';
@@ -13,7 +14,7 @@ import 'package:iterable_dropdown/src/iterable_dropdown_item.dart';
 
 part 'iterable_dropdown_controller.dart';
 
-/// A custom widget builder for selected options.
+/// A widget builder for options.
 /// Provides with [context], [index], [item], [selected], [toggleSelection]
 ///
 /// [index] --> index of the option in the dropdown
@@ -32,6 +33,18 @@ typedef IterableDropdownItemBuilder<T> =
       bool selected,
       void Function() toggleSelection,
     );
+
+/// A seaparator widget builder for options.
+/// Provides with [context], [index], [item], [selected]
+///
+/// [index] --> index of the option in the dropdown
+///
+/// [item] --> option.
+/// It gives the item data in [IterableDropdownItem] format
+///
+/// [selected] --> whether the option is selected or not
+typedef IterableDropdownSeparatorBuilder<T> =
+    Widget Function(BuildContext context, int index);
 
 /// A custom widget builder for selected options.
 /// Provides with [context], [index], [item], [delete]
@@ -74,9 +87,10 @@ class IterableDropdown<T> extends StatefulWidget {
     this.controller,
     required Iterable<IterableDropdownItem<T>> items,
     required this.itemBuilder,
+    this.separatorBuilder,
     this.selectionMode = SelectionMode.single,
-    this.maxHeight = 350,
     this.itemHeight = 60,
+    this.dropdownConfig = const DropdownConfig(),
     this.fieldConfig = const FieldConfig(),
     this.enableSearch = true,
     this.searchFieldConfig = const SearchFieldConfig(),
@@ -103,9 +117,10 @@ class IterableDropdown<T> extends StatefulWidget {
     this.controller,
     required Future<Iterable<IterableDropdownItem<T>>> Function() future,
     required this.itemBuilder,
+    this.separatorBuilder,
     this.selectionMode = SelectionMode.single,
-    this.maxHeight = 350,
     this.itemHeight = 60,
+    this.dropdownConfig = const DropdownConfig(),
     this.fieldConfig = const FieldConfig(),
     this.enableSearch = true,
     this.searchFieldConfig = const SearchFieldConfig(),
@@ -162,6 +177,18 @@ class IterableDropdown<T> extends StatefulWidget {
   /// [toggleSelection] --> function to select / unselect the option
   final IterableDropdownItemBuilder<T> itemBuilder;
 
+  /// The separator for your dropdown list
+  ///
+  /// Provides with [context], [index], [item], [selected]
+  ///
+  /// [index] --> index of the option in the dropdown
+  ///
+  /// [item] --> option.
+  /// It gives the item data in [IterableDropdownItem] format
+  ///
+  /// [selected] --> whether the option is selected or not
+  final IterableDropdownSeparatorBuilder<T>? separatorBuilder;
+
   /// Each dropdown item height
   ///
   /// This is important to calculate the dropdown height to make it responsive
@@ -169,16 +196,14 @@ class IterableDropdown<T> extends StatefulWidget {
   /// It defaults to 60.0
   final double itemHeight;
 
-  /// The maximum height for your dropdown
-  /// This defaults to 350.0
-  final double maxHeight;
-
   /// The field level configuration
   ///
   /// This contains all the selected item configuration
   ///
   /// You can configure the [FieldConfig.wrapStyle], [FieldConfig.spacing], ...
   final FieldConfig fieldConfig;
+
+  final DropdownConfig dropdownConfig;
 
   /// Whether to enable the search field
   ///
@@ -327,11 +352,16 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
           -(widget.margin?.vertical ?? 0),
         );
 
+    final dropdownConfig = widget.dropdownConfig;
+
     // Calculate the dynamic height
     final textInputHeight = widget.enableSearch ? 60 : 0;
     final itemCount = _controller.items.length;
     final listHeight = itemCount * widget.itemHeight;
-    final dropdownHeight = min(listHeight, widget.maxHeight - textInputHeight);
+    final dropdownHeight = min(
+      listHeight,
+      dropdownConfig.maxHeight - textInputHeight,
+    );
 
     final screenSize = MediaQuery.of(context).size;
     final screenHeight = screenSize.height;
@@ -416,9 +446,14 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
             link: _layerLink,
             showWhenUnlinked: false,
             offset: offset,
-            child: Material(
-              elevation: 4.0,
-              borderRadius: BorderRadius.circular(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                border: dropdownConfig.border,
+                borderRadius: dropdownConfig.borderRadius,
+                color: dropdownConfig.backgroundColor,
+                gradient: dropdownConfig.backgroundGradient,
+                boxShadow: dropdownConfig.boxShadow,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 key: _overlayKey,
@@ -448,58 +483,68 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                             (widget.customItems.start != null ? 1 : 0) +
                             (widget.customItems.end != null ? 1 : 0);
 
+                        Widget itemBuilder(BuildContext context, int index) {
+                          if (index == 0 && widget.customItems.start != null) {
+                            return widget.customItems.start!;
+                          }
+
+                          if (index == itemCount - 1 &&
+                              widget.customItems.end != null) {
+                            return widget.customItems.end!;
+                          }
+
+                          if (filteredItemsCount <= 0) {
+                            return Container(
+                              alignment: Alignment.center,
+                              child: Text(
+                                'No items found',
+                                style: TextStyle(
+                                  fontSize:
+                                      searchDecoration.hintStyle?.fontSize ??
+                                      14,
+                                  color: searchDecoration.iconColor,
+                                ),
+                              ),
+                            );
+                          }
+
+                          final tempIndex =
+                              index -
+                              (widget.customItems.start != null ? 1 : 0);
+
+                          final item = _controller.filteredItems.elementAt(
+                            tempIndex,
+                          );
+                          final selected = _controller.isSelected(item);
+
+                          void toggleSelection() =>
+                              _controller.toggleSelection(item.key);
+
+                          final child = widget.itemBuilder(
+                            context,
+                            tempIndex,
+                            item,
+                            selected,
+                            toggleSelection,
+                          );
+
+                          return child;
+                        }
+
+                        if (widget.separatorBuilder != null) {
+                          return ListView.separated(
+                            padding: EdgeInsets.zero,
+                            itemCount: itemCount,
+                            itemBuilder: itemBuilder,
+                            separatorBuilder: widget.separatorBuilder!,
+                          );
+                        }
+
                         return ListView.builder(
                           padding: EdgeInsets.zero,
                           itemCount: itemCount,
                           itemExtent: widget.itemHeight,
-                          itemBuilder: (context, index) {
-                            if (index == 0 &&
-                                widget.customItems.start != null) {
-                              return widget.customItems.start!;
-                            }
-
-                            if (index == itemCount - 1 &&
-                                widget.customItems.end != null) {
-                              return widget.customItems.end!;
-                            }
-
-                            if (filteredItemsCount <= 0) {
-                              return Container(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  'No items found',
-                                  style: TextStyle(
-                                    fontSize:
-                                        searchDecoration.hintStyle?.fontSize ??
-                                        14,
-                                    color: searchDecoration.iconColor,
-                                  ),
-                                ),
-                              );
-                            }
-
-                            final tempIndex =
-                                index -
-                                (widget.customItems.start != null ? 1 : 0);
-
-                            final item = _controller.filteredItems.elementAt(
-                              tempIndex,
-                            );
-                            final selected = _controller.isSelected(item);
-
-                            void toggleSelection() =>
-                                _controller.toggleSelection(item.key);
-
-                            final child = widget.itemBuilder(
-                              context,
-                              tempIndex,
-                              item,
-                              selected,
-                              toggleSelection,
-                            );
-
-                            return child;
-                          },
+                          itemBuilder: itemBuilder,
                         );
                       },
                     ),
