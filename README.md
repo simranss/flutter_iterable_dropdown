@@ -1,4 +1,4 @@
-A dropdown that works with all iterables instead of just lists. 
+A dropdown that works with all iterables instead of just lists.
 It has multiselect features for selecting multiple items as well.
 
 This dropdown stays performant because it consumes any `Iterable` instead of forcing you to copy the data into `List`s, and it uses `ListView.builder` so only the options currently visible on screen are ever built and kept in memory.
@@ -8,30 +8,30 @@ This dropdown stays performant because it consumes any `Iterable` instead of for
 ![Custom Decoration](screenshots/customisations.png)
 
 | Single Select                                                                                                                        | Single Select with Search                                                                                                                               | Multi Select                                                                                                                       | Multi Select with Search                                                                                                                              |
-|--------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | ![Single Select](https://raw.githubusercontent.com/simranss/repo-assets/refs/heads/main/flutter-iterable-dropdown/single_select.gif) | ![Single Select with Search](https://raw.githubusercontent.com/simranss/repo-assets/refs/heads/main/flutter-iterable-dropdown/single_search_select.gif) | ![Multi Select](https://raw.githubusercontent.com/simranss/repo-assets/refs/heads/main/flutter-iterable-dropdown/multi_select.gif) | ![Multi Select with Search](https://raw.githubusercontent.com/simranss/repo-assets/refs/heads/main/flutter-iterable-dropdown/multi_search_select.gif) |
-
 
 ## Features
 
 Use this package in your Flutter app to:
- * select multiple items in dropdowns
- * use iterables in a dropdown
- * Keep huge data sources responsive by only building the visible options through `ListView.builder`
- * Provide custom first/last options via `CustomItems` that can act as headers or buttons
- * Has a future constructor for building from APIs
- * Package size <= 40KB
+
+- select multiple items in dropdowns
+- use iterables in a dropdown
+- Keep huge data sources responsive by only building the visible options through `ListView.builder`
+- Provide custom first/last options via `CustomItems` that can act as headers or buttons
+- Has a future constructor for building from APIs
+- Package size <= 40KB
 
 ## Platform Support
 
 | Platform | Supported |
-|----------|-----------|
-| Android  | ✅         |
-| iOS      | ✅         |
-| Web      | ✅         |
-| Windows  | ✅         |
-| MacOS    | ✅         |
-| Linux    | ✅         |
+| -------- | --------- |
+| Android  | ✅        |
+| iOS      | ✅        |
+| Web      | ✅        |
+| Windows  | ✅        |
+| MacOS    | ✅        |
+| Linux    | ✅        |
 
 ## Getting started
 
@@ -50,6 +50,7 @@ import 'package:iterable_dropdown/iterable_dropdown.dart';
 ## Usage
 
 Directly use the component
+
 ```dart
 @override
 Widget build(BuildContext context) {
@@ -60,6 +61,7 @@ Widget build(BuildContext context) {
       return ListTile(
         key: ValueKey(item.key),
         title: Text(item.label),
+        subtitle: item.secondaryLabel != null ? Text(item.secondaryLabel!) : null,
         trailing: selected ? const Icon(Icons.check_circle_outline) : null,
         selected: selected,
         onTap: toggleSelection,
@@ -95,6 +97,7 @@ Widget build(BuildContext context) {
     itemBuilder: (_, __, item, selected, toggleSelection) => ListTile(
       key: ValueKey(item.key),
       title: Text(item.label),
+      subtitle: item.secondaryLabel != null ? Text(item.secondaryLabel!) : null,
       trailing: selected ? const Icon(Icons.check_circle_outline) : null,
       selected: selected,
       onTap: toggleSelection,
@@ -112,17 +115,18 @@ You can also refresh the dropdown using the `_dropdownController.refresh()` meth
 
 ### Custom Items (Pinned Rows)
 
-Use the `customItems` parameter when you need pinned widgets before or after the generated options. These widgets never get filtered or selected, which makes them perfect for headers, dividers, or persistent actions. For instance, a customer selector can expose an `Add new customer` row at the top that launches a creation flow.
+Use the `customItems` parameter when you need pinned widgets before or after the generated options. These widgets never get filtered or selected, which makes them perfect for headers, dividers, or persistent actions. For instance, a customer selector can expose an `Add new option` row at the top that launches a creation flow.
 
 ```dart
 @override
 Widget build(BuildContext context) {
   return IterableDropdown<Customer>.builder(
-    controller: _customerController,
-    items: customers,
+    controller: _controller,
+    items: options,
     itemBuilder: (context, index, item, selected, toggleSelection) => ListTile(
       key: ValueKey(item.key),
       title: Text(item.label),
+      subtitle: item.secondaryLabel != null ? Text(item.secondaryLabel!) : null,
       trailing: selected ? const Icon(Icons.check_circle_outline) : null,
       selected: selected,
       onTap: toggleSelection,
@@ -130,21 +134,21 @@ Widget build(BuildContext context) {
     customItems: CustomItems(
       start: ListTile(
         leading: const Icon(Icons.add),
-        title: const Text('Add new customer'),
+        title: const Text('Add new option'),
         onTap: _createCustomer,
       ),
       end: TextButton(
         onPressed: _showAdvancedFilters,
-        child: const Text('Show all customers'),
+        child: const Text('Show all options'),
       ),
     ),
   );
 }
 ```
 
-Those boundary widgets stay visible regardless of what the user types into the search box and cannot be selected, so they are ideal for headers or CTA rows.
+Those boundary widgets stay visible regardless of what the user types into the search box and cannot be selected, so they are ideal for headers or sticky rows.
 
-### Custom Trigger (MenuAnchor-style)
+### Custom Builder (MenuAnchor-style)
 
 When you want full control over the dropdown button, provide a `builder` and an optional `child`.
 The `builder` receives the controller and the `child` widget so you can recreate a MenuAnchor-like
@@ -159,6 +163,7 @@ Widget build(BuildContext context) {
     itemBuilder: (_, _, item, selected, toggleSelection) => ListTile(
       key: ValueKey(item.key),
       title: Text(item.label),
+      subtitle: item.secondaryLabel != null ? Text(item.secondaryLabel!) : null,
       trailing: selected ? const Icon(Icons.check_circle_outline) : null,
       selected: selected,
       onTap: toggleSelection,
