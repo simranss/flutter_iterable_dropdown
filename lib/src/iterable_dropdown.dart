@@ -472,6 +472,11 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
             offset: offset,
             child: Material(
               borderRadius: dropdownConfig.borderRadius,
+              elevation:
+                  dropdownConfig.boxShadow != null &&
+                      dropdownConfig.boxShadow!.isNotEmpty
+                  ? 0
+                  : 4,
               child: Container(
                 decoration: BoxDecoration(
                   border: dropdownConfig.border,
