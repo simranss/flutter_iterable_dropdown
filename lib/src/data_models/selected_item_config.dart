@@ -13,7 +13,7 @@ enum ItemBuilderType { chip, custom }
 enum WrapStyle { wrap, list }
 
 /// Selected Item level configuration
-class SelectedItemConfig {
+class SelectedItemConfig<T> {
   /// Wrap style for the selected items
   /// can be [WrapStyle.wrap] or [WrapStyle.list]
   ///
@@ -44,7 +44,7 @@ class SelectedItemConfig {
   /// It gives the item data in [IterableDropdownItem] format
   ///
   /// [delete] --> function to delete the selected option
-  final IterableDropdownSelectedItemBuilder? selectedItemBuilder;
+  final IterableDropdownSelectedItemBuilder<T>? selectedItemBuilder;
 
   /// Spacing between the selected items
   /// [spacing] represents the horizontal spacing between the selected items. The default value is 8.0.

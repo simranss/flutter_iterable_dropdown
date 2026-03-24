@@ -220,7 +220,7 @@ class IterableDropdown<T> extends StatefulWidget {
   final SearchFieldConfig searchFieldConfig;
 
   /// Configuration and customisation options for selected items
-  final SelectedItemConfig selectedItemConfig;
+  final SelectedItemConfig<T> selectedItemConfig;
 
   /// Custom decoration for the dropdown
   final Decoration? decoration;
