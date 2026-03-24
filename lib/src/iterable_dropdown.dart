@@ -470,113 +470,119 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
             link: _layerLink,
             showWhenUnlinked: false,
             offset: offset,
-            child: Container(
-              decoration: BoxDecoration(
-                border: dropdownConfig.border,
-                borderRadius: dropdownConfig.borderRadius,
-                color: dropdownConfig.backgroundColor,
-                gradient: dropdownConfig.backgroundGradient,
-                boxShadow: dropdownConfig.boxShadow,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                key: _overlayKey,
-                children: [
-                  if (widget.enableSearch)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      child: TextField(
-                        controller: _searchTextController,
-                        focusNode: _searchFocusNode,
-                        decoration: searchDecoration,
-                        onChanged: (text) => _controller.onFilter(
-                          text,
-                          widget.searchFieldConfig.customSearchCallback,
+            child: Material(
+              borderRadius: dropdownConfig.borderRadius,
+              child: Container(
+                decoration: BoxDecoration(
+                  border: dropdownConfig.border,
+                  borderRadius: dropdownConfig.borderRadius,
+                  color: dropdownConfig.backgroundColor,
+                  gradient: dropdownConfig.backgroundGradient,
+                  boxShadow: dropdownConfig.boxShadow,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  key: _overlayKey,
+                  children: [
+                    if (widget.enableSearch)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        child: TextField(
+                          controller: _searchTextController,
+                          focusNode: _searchFocusNode,
+                          decoration: searchDecoration,
+                          onChanged: (text) => _controller.onFilter(
+                            text,
+                            widget.searchFieldConfig.customSearchCallback,
+                          ),
                         ),
                       ),
-                    ),
-                  Expanded(
-                    child: ListenableBuilder(
-                      listenable: _controller,
-                      builder: (context, _) {
-                        final filteredItemsCount =
-                            _controller.filteredItems.length;
+                    Expanded(
+                      child: ListenableBuilder(
+                        listenable: _controller,
+                        builder: (context, _) {
+                          final filteredItemsCount =
+                              _controller.filteredItems.length;
 
-                        final itemCount =
-                            (filteredItemsCount <= 0 ? 1 : filteredItemsCount) +
-                            (widget.customItems.start != null ? 1 : 0) +
-                            (widget.customItems.end != null ? 1 : 0);
+                          final itemCount =
+                              (filteredItemsCount <= 0
+                                  ? 1
+                                  : filteredItemsCount) +
+                              (widget.customItems.start != null ? 1 : 0) +
+                              (widget.customItems.end != null ? 1 : 0);
 
-                        Widget itemBuilder(BuildContext context, int index) {
-                          if (index == 0 && widget.customItems.start != null) {
-                            return widget.customItems.start!;
-                          }
+                          Widget itemBuilder(BuildContext context, int index) {
+                            if (index == 0 &&
+                                widget.customItems.start != null) {
+                              return widget.customItems.start!;
+                            }
 
-                          if (index == itemCount - 1 &&
-                              widget.customItems.end != null) {
-                            return widget.customItems.end!;
-                          }
+                            if (index == itemCount - 1 &&
+                                widget.customItems.end != null) {
+                              return widget.customItems.end!;
+                            }
 
-                          if (filteredItemsCount <= 0) {
-                            return Container(
-                              alignment: Alignment.center,
-                              child: Text(
-                                'No items found',
-                                style: TextStyle(
-                                  fontSize:
-                                      searchDecoration.hintStyle?.fontSize ??
-                                      14,
-                                  color: searchDecoration.iconColor,
+                            if (filteredItemsCount <= 0) {
+                              return Container(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  'No items found',
+                                  style: TextStyle(
+                                    fontSize:
+                                        searchDecoration.hintStyle?.fontSize ??
+                                        14,
+                                    color: searchDecoration.iconColor,
+                                  ),
                                 ),
-                              ),
+                              );
+                            }
+
+                            final tempIndex =
+                                index -
+                                (widget.customItems.start != null ? 1 : 0);
+
+                            final item = _controller.filteredItems.elementAt(
+                              tempIndex,
+                            );
+                            final selected = _controller.isSelected(item);
+
+                            void toggleSelection() =>
+                                _controller.toggleSelection(item.key);
+
+                            final child = widget.itemBuilder(
+                              context,
+                              tempIndex,
+                              item,
+                              selected,
+                              toggleSelection,
+                            );
+
+                            return child;
+                          }
+
+                          if (widget.separatorBuilder != null) {
+                            return ListView.separated(
+                              padding: EdgeInsets.zero,
+                              itemCount: itemCount,
+                              itemBuilder: itemBuilder,
+                              separatorBuilder: widget.separatorBuilder!,
                             );
                           }
 
-                          final tempIndex =
-                              index -
-                              (widget.customItems.start != null ? 1 : 0);
-
-                          final item = _controller.filteredItems.elementAt(
-                            tempIndex,
-                          );
-                          final selected = _controller.isSelected(item);
-
-                          void toggleSelection() =>
-                              _controller.toggleSelection(item.key);
-
-                          final child = widget.itemBuilder(
-                            context,
-                            tempIndex,
-                            item,
-                            selected,
-                            toggleSelection,
-                          );
-
-                          return child;
-                        }
-
-                        if (widget.separatorBuilder != null) {
-                          return ListView.separated(
+                          return ListView.builder(
                             padding: EdgeInsets.zero,
                             itemCount: itemCount,
+                            itemExtent: widget.itemHeight,
                             itemBuilder: itemBuilder,
-                            separatorBuilder: widget.separatorBuilder!,
                           );
-                        }
-
-                        return ListView.builder(
-                          padding: EdgeInsets.zero,
-                          itemCount: itemCount,
-                          itemExtent: widget.itemHeight,
-                          itemBuilder: itemBuilder,
-                        );
-                      },
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
