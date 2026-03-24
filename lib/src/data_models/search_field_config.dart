@@ -8,9 +8,11 @@ import 'package:flutter/material.dart'
         Widget,
         Color,
         Icon;
+import 'package:iterable_dropdown/iterable_dropdown.dart'
+    show IterableDropdownItem;
 
 /// Search Field Configuration
-class SearchFieldConfig {
+class SearchFieldConfig<T> {
   /// Search field TextEditingController
   final TextEditingController? controller;
 
@@ -36,6 +38,9 @@ class SearchFieldConfig {
 
   /// color for [clearIcon]
   final Color? clearIconColor;
+
+  final Iterable<IterableDropdownItem<T>> Function(String)?
+  customSearchCallback;
 
   /// Default constructor for [SearchFieldConfig].
   /// Used for customising and configuring the search box when you open the dropdown
@@ -64,5 +69,6 @@ class SearchFieldConfig {
     this.clearIcon = const Icon(Icons.close_rounded),
     this.clearIconSize,
     this.clearIconColor,
+    this.customSearchCallback,
   });
 }

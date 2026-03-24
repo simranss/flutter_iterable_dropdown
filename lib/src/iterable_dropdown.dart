@@ -217,7 +217,7 @@ class IterableDropdown<T> extends StatefulWidget {
 
   /// The search field configuration
   /// This contains all the search field configuration such as [SearchFieldConfig.inputDecorationTheme] and [SearchFieldConfig.hint]
-  final SearchFieldConfig searchFieldConfig;
+  final SearchFieldConfig<T> searchFieldConfig;
 
   /// Configuration and customisation options for selected items
   final SelectedItemConfig<T> selectedItemConfig;
@@ -357,7 +357,9 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
     // Calculate the dynamic height
     final textInputHeight = widget.enableSearch ? 60 : 0;
     final itemCount = _controller.items.length;
-    final listHeight = itemCount * widget.itemHeight;
+    final listHeight = itemCount == 0
+        ? 3 * widget.itemHeight
+        : itemCount * widget.itemHeight;
     final dropdownHeight = min(
       listHeight,
       dropdownConfig.maxHeight - textInputHeight,
@@ -468,7 +470,10 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                         controller: _searchTextController,
                         focusNode: _searchFocusNode,
                         decoration: searchDecoration,
-                        onChanged: _controller.onFilter,
+                        onChanged: (text) => _controller.onFilter(
+                          text,
+                          widget.searchFieldConfig.customSearchCallback,
+                        ),
                       ),
                     ),
                   Expanded(

@@ -97,16 +97,23 @@ class IterableDropdownController<T> extends ChangeNotifier {
   }
 
   /// filter dropdown options based on the query
-  void onFilter(String query) {
+  void onFilter(
+    String query, [
+    Iterable<IterableDropdownItem<T>> Function(String)? customSearchCallback,
+  ]) {
     if (query.isEmpty) {
       _filteredItems = _items;
       notifyListeners();
       return;
     }
 
-    _filteredItems = _items.where(
-      (ele) => ele.key.toLowerCase().contains(query.toLowerCase()),
-    );
+    if (customSearchCallback != null) {
+      _filteredItems = customSearchCallback(query);
+    } else {
+      _filteredItems = _items.where(
+        (ele) => ele.key.toLowerCase().contains(query.toLowerCase()),
+      );
+    }
     notifyListeners();
   }
 
