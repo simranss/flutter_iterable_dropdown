@@ -35,14 +35,9 @@ typedef IterableDropdownItemBuilder<T> =
     );
 
 /// A seaparator widget builder for options.
-/// Provides with [context], [index], [item], [selected]
+/// Provides with [context], [index]
 ///
 /// [index] --> index of the option in the dropdown
-///
-/// [item] --> option.
-/// It gives the item data in [IterableDropdownItem] format
-///
-/// [selected] --> whether the option is selected or not
 typedef IterableDropdownSeparatorBuilder<T> =
     Widget Function(BuildContext context, int index);
 
@@ -76,12 +71,20 @@ class IterableDropdown<T> extends StatefulWidget {
   /// It is highly recommended to use the [IterableDropdownController] using the [controller] field for controlling any and all aspects of the dropdown.
   ///
   /// If you enable search, make sure to pass the string you want to search against in the [IterableDropdownItem.key] of [items].
+  /// You can also use [SearchFieldConfig.customSearchCallback] to provide your own search logic.
   ///
   /// When space is not available at bottom, it will try to open in top.
-  /// If both don't have enough space to show all [items] or the [maxHeight], then it'll choose the side which has more space and adjust the height according to available space
+  /// If both don't have enough space to show all [items] or the [DropdownConfig.maxHeight], then it'll choose the side which has more space and adjust the height according to available space
   ///
-  /// You can customise how the selected items appear using the [fieldConfig].
-  /// You can choose the wrapStyle using [FieldConfig.wrapStyle] or the spacing using [FieldConfig.spacing].
+  /// You can customise how the selected items appear using the [selectedItemConfig].
+  /// You can choose the wrapStyle using [SelectedItemConfig.wrapStyle] or the spacing using [SelectedItemConfig.spacing].
+  ///
+  /// You can choose if the dropdown should be single selection or multiple selection using [selectionMode].
+  /// It defaults to [SelectionMode.single].
+  ///
+  /// You can also customise the overlay dropdown's appearance using [dropdownConfig].
+  /// You can customise background color using [DropdownConfig.backgroundColor] or [DropdownConfig.backgroundGradient].
+  /// You can put borders or make it rounded using [DropdownConfig.border] and [DropdownConfig.borderRadius]
   const IterableDropdown.builder({
     super.key,
     this.controller,
@@ -94,7 +97,6 @@ class IterableDropdown<T> extends StatefulWidget {
     this.fieldConfig = const FieldConfig(),
     this.enableSearch = true,
     this.searchFieldConfig = const SearchFieldConfig(),
-    this.decoration,
     this.margin,
     this.customItems = const CustomItems(),
     this.selectedItemConfig = const SelectedItemConfig(),
@@ -112,6 +114,30 @@ class IterableDropdown<T> extends StatefulWidget {
   ///
   /// The provided [future] is executed only once per controller lifecycle unless
   /// [IterableDropdownController.refresh] is invoked.
+  ///
+  /// Pass [future] and [itemBuilder], and you'll have a basic dropdown ready.
+  /// [future] is what will provide the Iterable of items you want to iterate over, while [itemBuilder] builds what user sees in the dropdown option.
+  /// Make sure to have unique [IterableDropdownItem.key] for all options.
+  ///
+  /// Provider a custom loader [Widget] using [loader].
+  ///
+  /// It is highly recommended to use the [IterableDropdownController] using the [controller] field for controlling any and all aspects of the dropdown.
+  ///
+  /// If you enable search, make sure to pass the string you want to search against in the [IterableDropdownItem.key] of [future].
+  /// You can also use [SearchFieldConfig.customSearchCallback] to provide your own search logic.
+  ///
+  /// When space is not available at bottom, it will try to open in top.
+  /// If both don't have enough space to show all items or the [DropdownConfig.maxHeight], then it'll choose the side which has more space and adjust the height according to available space
+  ///
+  /// You can customise how the selected items appear using the [selectedItemConfig].
+  /// You can choose the wrapStyle using [SelectedItemConfig.wrapStyle] or the spacing using [SelectedItemConfig.spacing].
+  ///
+  /// You can choose if the dropdown should be single selection or multiple selection using [selectionMode].
+  /// It defaults to [SelectionMode.single].
+  ///
+  /// You can also customise the overlay dropdown's appearance using [dropdownConfig].
+  /// You can customise background color using [DropdownConfig.backgroundColor] or [DropdownConfig.backgroundGradient].
+  /// You can put borders or make it rounded using [DropdownConfig.border] and [DropdownConfig.borderRadius]
   const IterableDropdown.future({
     super.key,
     this.controller,
@@ -178,14 +204,9 @@ class IterableDropdown<T> extends StatefulWidget {
 
   /// The separator for your dropdown list
   ///
-  /// Provides with [context], [index], [item], [selected]
+  /// Provides with [context], [index]
   ///
   /// [index] --> index of the option in the dropdown
-  ///
-  /// [item] --> option.
-  /// It gives the item data in [IterableDropdownItem] format
-  ///
-  /// [selected] --> whether the option is selected or not
   final IterableDropdownSeparatorBuilder<T>? separatorBuilder;
 
   /// Each dropdown item height
@@ -197,11 +218,16 @@ class IterableDropdown<T> extends StatefulWidget {
 
   /// The field level configuration
   ///
-  /// This contains all the selected item configuration
+  /// This contains all the field configuration
   ///
-  /// You can configure the [FieldConfig.wrapStyle], [FieldConfig.spacing], ...
+  /// You can configure the [FieldConfig.decoration], [FieldConfig.hint], [FieldConfig.clearAllIcon] ...
   final FieldConfig fieldConfig;
 
+  /// The dropdown overlay configuration
+  ///
+  /// This contains all the dropdown overlay customisations
+  ///
+  /// You can configure the [DropdownConfig.border], [DropdownConfig.maxHeight], [DropdownConfig.backgroundColor], ...
   final DropdownConfig dropdownConfig;
 
   /// Whether to enable the search field
@@ -215,7 +241,7 @@ class IterableDropdown<T> extends StatefulWidget {
   final bool enableSearch;
 
   /// The search field configuration
-  /// This contains all the search field configuration such as [SearchFieldConfig.inputDecorationTheme] and [SearchFieldConfig.hint]
+  /// This contains all the search field configuration such as [SearchFieldConfig.inputDecorationTheme], [SearchFieldConfig.hint], ...
   final SearchFieldConfig<T> searchFieldConfig;
 
   /// Configuration and customisation options for selected items

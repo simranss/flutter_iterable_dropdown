@@ -39,6 +39,7 @@ class SearchFieldConfig<T> {
   /// color for [clearIcon]
   final Color? clearIconColor;
 
+  /// custom search callback that overrides the default search callback
   final Iterable<IterableDropdownItem<T>> Function(String)?
   customSearchCallback;
 
@@ -60,6 +61,8 @@ class SearchFieldConfig<T> {
   /// [clearIconSize] --> iconSize for [clearIcon]
   ///
   /// [clearIconColor] --> color for [clearIcon]
+  ///
+  /// [customSearchCallback] --> custom search callback that overrides the default search
   const SearchFieldConfig({
     this.controller,
     this.focusNode,
