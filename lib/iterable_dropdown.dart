@@ -10,5 +10,6 @@ export 'package:iterable_dropdown/src/data_models/custom_items.dart';
 export 'package:iterable_dropdown/src/data_models/field_config.dart';
 export 'package:iterable_dropdown/src/data_models/search_field_config.dart';
 export 'package:iterable_dropdown/src/data_models/selected_item_config.dart';
+export 'package:iterable_dropdown/src/data_models/dropdown_config.dart';
 export 'package:iterable_dropdown/src/iterable_dropdown.dart';
 export 'package:iterable_dropdown/src/iterable_dropdown_item.dart';
