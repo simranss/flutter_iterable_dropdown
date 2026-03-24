@@ -1,3 +1,17 @@
+# 2.0.9
+**24-03-2026**
+
+* BREAKING CHANGES: `decoration` moved to `FieldConfig.decoration`
+* Updated Dart Version to 3.10.0
+* Bug Fixes:
+   * Custom builder wasn't taking the margin or padding into consideration
+   * `SelectedItemConfig.selectedItemBuilder` was missing type
+   * The documentation in some places was not updated and was hence incorrect
+* Added drodpown overlay customisation options using `dropdownConfig`
+* Added a custom search callback in `SearchFieldConfig`
+* Added an `updateState` in a few functions in `IterableDropdownController` as an optional paramter if you do not want to update state but update the values
+* Added more label fields in `IterableDropdownItem` for selected items and subtitles
+
 # 2.0.8
 **02-01-2026**
 
