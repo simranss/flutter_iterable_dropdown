@@ -12,11 +12,17 @@ class IterableDropdownItem<T> {
   /// [label] --> This is what will be displayed in the dropdown option.
   ///
   /// [value] --> This is the internal value for the option.
+  ///
+  /// [selectedItemLabel] --> This is the what will show when the item is selected. If null, then labell will be used
+  ///
+  /// [secondaryLabel] --> An optional string that can be used to display a subtitle or description
   const IterableDropdownItem({
     required this.key,
     required this.label,
     required this.value,
-  });
+    String? selectedItemLabel,
+    this.secondaryLabel,
+  }) : selectedItemLabel = selectedItemLabel ?? label;
 
   /// A unique key for the dropdown option.
   /// This is what will be used as a search string as well when you enable search.
@@ -31,6 +37,12 @@ class IterableDropdownItem<T> {
 
   /// The string that will get displayed to the user in the dropdown.
   final String label;
+
+  /// A secondary string in case you want to show a subtitle text in the dropdown
+  final String? secondaryLabel;
+
+  /// The string that will get displayed to the user when it is selected
+  final String selectedItemLabel;
 
   @override
   bool operator ==(Object other) {

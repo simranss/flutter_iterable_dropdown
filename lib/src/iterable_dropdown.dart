@@ -672,7 +672,10 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
 
                 return Chip(
                   deleteButtonTooltipMessage: '',
-                  label: Text(item.label, style: chipConfig.labelStyle),
+                  label: Text(
+                    item.selectedItemLabel,
+                    style: chipConfig.labelStyle,
+                  ),
                   onDeleted: chipConfig.showDeleteIcon ? deleteFunc : null,
                   backgroundColor: chipConfig.backgroundColor,
                   deleteIcon: chipConfig.showDeleteIcon
@@ -722,7 +725,10 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
                       deleteFunc,
                     ) ??
                     Text(
-                      _controller.selectedDropdownItems.firstOrNull?.label ??
+                      _controller
+                              .selectedDropdownItems
+                              .firstOrNull
+                              ?.selectedItemLabel ??
                           '',
                     );
               }
