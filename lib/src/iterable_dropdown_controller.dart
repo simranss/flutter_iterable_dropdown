@@ -116,28 +116,37 @@ class IterableDropdownController<T> extends ChangeNotifier {
   /// [SelectionMode.single] --> Since only 1 option can be selected at a time, it removes the previous selection.
   ///
   /// [SelectionMode.multi] --> adds a new selection
-  void addSelection(String key) {
+  void addSelection(String key, {bool updateState = true}) {
     if (_selectionMode == SelectionMode.single) {
       _selectedKeys = {};
     }
     _selectedKeys = {..._selectedKeys, key};
     _bumpSelectionVersion();
-    notifyListeners();
+
+    if (updateState) {
+      notifyListeners();
+    }
   }
 
   /// De-selects the option with matching key.
-  void removeSelection(String key) {
+  void removeSelection(String key, {bool updateState = true}) {
     _selectedKeys = {..._selectedKeys}..remove(key);
     _bumpSelectionVersion();
-    notifyListeners();
+
+    if (updateState) {
+      notifyListeners();
+    }
   }
 
   /// Selects the option with matching key.
   /// This removes all the previous selections.
-  void setSelection(String key) {
+  void setSelection(String key, {bool updateState = true}) {
     _selectedKeys = {key};
     _bumpSelectionVersion();
-    notifyListeners();
+
+    if (updateState) {
+      notifyListeners();
+    }
   }
 
   /// Selects all the options with matching keys from iterable.
@@ -149,7 +158,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
   /// [SelectionMode.multi] --> all items are selected
   ///
   /// If the keys are empty, nothing happens
-  void addSelections(Iterable<String> keys) {
+  void addSelections(Iterable<String> keys, {bool updateState = true}) {
     if (keys.isEmpty) return;
     if (_selectionMode == SelectionMode.single) {
       _selectedKeys = {keys.first};
@@ -157,20 +166,26 @@ class IterableDropdownController<T> extends ChangeNotifier {
       _selectedKeys = {..._selectedKeys, ...keys};
     }
     _bumpSelectionVersion();
-    notifyListeners();
+
+    if (updateState) {
+      notifyListeners();
+    }
   }
 
   /// De-selects all the options with matching keys from iterable
   ///
   /// If the keys are empty, nothing happens
-  void removeSelections(Iterable<String> keys) {
+  void removeSelections(Iterable<String> keys, {bool updateState = true}) {
     if (keys.isEmpty) return;
 
     _selectedKeys = {..._selectedKeys}
       ..removeWhere((selectedKey) => keys.contains(selectedKey));
 
     _bumpSelectionVersion();
-    notifyListeners();
+
+    if (updateState) {
+      notifyListeners();
+    }
   }
 
   /// Selects all the options with matching keys from iterable.
@@ -181,7 +196,7 @@ class IterableDropdownController<T> extends ChangeNotifier {
   /// [SelectionMode.multi] --> all keys are selected
   ///
   /// If the keys are empty, nothing happens
-  void setSelections(Iterable<String> keys) {
+  void setSelections(Iterable<String> keys, {bool updateState = true}) {
     if (keys.isEmpty) return;
 
     if (_selectionMode == SelectionMode.single) {
@@ -191,14 +206,17 @@ class IterableDropdownController<T> extends ChangeNotifier {
     }
 
     _bumpSelectionVersion();
-    notifyListeners();
+
+    if (updateState) {
+      notifyListeners();
+    }
   }
 
   /// Toggles the selection of a key
   ///
   /// if the key is already selected, it will be removed.
   /// Whereas if the key wasn't selected, it will get selected
-  void toggleSelection(String key) {
+  void toggleSelection(String key, {bool updateState = true}) {
     if (_selectedKeys.contains(key)) {
       _selectedKeys = {..._selectedKeys}..remove(key);
     } else {
@@ -208,36 +226,48 @@ class IterableDropdownController<T> extends ChangeNotifier {
       _selectedKeys = {..._selectedKeys, key};
     }
     _bumpSelectionVersion();
-    notifyListeners();
+
+    if (updateState) {
+      notifyListeners();
+    }
   }
 
   /// Clear all selections
-  void clearSelections() {
+  void clearSelections({bool updateState = true}) {
     _selectedKeys = {};
     _bumpSelectionVersion();
-    notifyListeners();
+
+    if (updateState) {
+      notifyListeners();
+    }
   }
 
   /// select all items which fulfill the predicate
-  void selectWhere(bool Function(IterableDropdownItem<T> item) predicate) {
+  void selectWhere(
+    bool Function(IterableDropdownItem<T> item) predicate, {
+    bool updateState = true,
+  }) {
     final keys = _items.map((ele) {
       final shouldSelect = predicate(ele);
 
       return shouldSelect ? ele.key : null;
     }).nonNulls;
 
-    setSelections(keys);
+    setSelections(keys, updateState: updateState);
   }
 
   /// de-select all items which fulfill the predicate
-  void deselectWhere(bool Function(IterableDropdownItem<T> item) predicate) {
+  void deselectWhere(
+    bool Function(IterableDropdownItem<T> item) predicate, {
+    bool updateState = true,
+  }) {
     final keys = _items.map((ele) {
       final shouldDeselect = predicate(ele);
 
       return shouldDeselect ? ele.key : null;
     }).nonNulls;
 
-    removeSelections(keys);
+    removeSelections(keys, updateState: updateState);
   }
 
   /// Returns if the key is selected
