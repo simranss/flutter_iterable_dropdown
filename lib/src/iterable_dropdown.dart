@@ -124,7 +124,6 @@ class IterableDropdown<T> extends StatefulWidget {
     this.fieldConfig = const FieldConfig(),
     this.enableSearch = true,
     this.searchFieldConfig = const SearchFieldConfig(),
-    this.decoration,
     this.margin,
     this.customItems = const CustomItems(),
     this.selectedItemConfig = const SelectedItemConfig(),
@@ -221,9 +220,6 @@ class IterableDropdown<T> extends StatefulWidget {
 
   /// Configuration and customisation options for selected items
   final SelectedItemConfig<T> selectedItemConfig;
-
-  /// Custom decoration for the dropdown
-  final Decoration? decoration;
 
   /// Margin for the dropdown
   final EdgeInsetsGeometry? margin;
@@ -741,8 +737,8 @@ class _IterableDropdownState<T> extends State<IterableDropdown<T>> {
             border: Border.all(color: Colors.grey),
             borderRadius: BorderRadius.circular(8),
           );
-          if (widget.decoration != null) {
-            dropdownDecoration = widget.decoration!;
+          if (fieldConfig.decoration != null) {
+            dropdownDecoration = fieldConfig.decoration!;
           }
 
           return CompositedTransformTarget(

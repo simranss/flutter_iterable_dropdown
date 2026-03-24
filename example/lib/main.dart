@@ -144,23 +144,23 @@ class _MyHomePageState extends State<MyHomePage> {
                       Icons.delete_outline_rounded,
                       color: Colors.deepPurple,
                     ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.deepPurple, width: 2),
+                      color: Colors.deepPurple.shade50,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.deepPurple.withAlpha(0x66),
+                          offset: Offset(4, 4),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
                   ),
                   items: _items,
                   itemBuilder: itemBuilder,
                   selectionMode: SelectionMode.multi,
                   margin: EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.deepPurple, width: 2),
-                    color: Colors.deepPurple.shade50,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.deepPurple.withAlpha(0x66),
-                        offset: Offset(4, 4),
-                        blurRadius: 10,
-                      ),
-                    ],
-                  ),
                 ),
               ],
             ),

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart'
     show Text, EdgeInsets, EdgeInsetsGeometry, Widget, Icons;
 
-/// Selected field level customisation
+/// Field level customisation
 class FieldConfig {
   /// The text that is shown when no item is selected
   /// The default text will be "Select an option"
@@ -23,6 +23,9 @@ class FieldConfig {
   /// color for [clearAllIcon]
   final Color? clearAllIconColor;
 
+  /// UI customisations using Decoration
+  final Decoration? decoration;
+
   /// Default constructor for the [FieldConfig].
   /// Used for dropdown field customisations
   ///
@@ -37,6 +40,8 @@ class FieldConfig {
   /// [clearAllIconSize] --> iconSize for [clearAllIcon]
   ///
   /// [clearAllIconColor] --> color for [clearAllIcon]
+  ///
+  /// [decoration] --> custom decoration
   const FieldConfig({
     this.hint = const Text('Select an option'),
     this.padding = const EdgeInsets.symmetric(horizontal: 10),
@@ -44,5 +49,6 @@ class FieldConfig {
     this.clearAllIcon = const Icon(Icons.close_rounded),
     this.clearAllIconSize = 24,
     this.clearAllIconColor,
+    this.decoration,
   });
 }
