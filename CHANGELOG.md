@@ -1,3 +1,8 @@
+# 2.0.10
+**25-03-2026**
+
+* Bug Fix: The dropdown overlay was failing due to no material found
+
 # 2.0.9
 **24-03-2026**
 
